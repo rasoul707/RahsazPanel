@@ -1,0 +1,321 @@
+// copied from node_modules/@pathofdev/react-tag-input/src/styles/index.scss
+
+$reactTagColorGray: #e1e1e1;
+$reactTagColorText: #333;
+$reactTagHeight: 2.375em;
+$reactTagFontSize: 1em;
+$reactTagBorderRadius: 3px;
+$reactTagMarginPadding: 0.1875em;
+
+.react-tag-input {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: $reactTagHeight;
+  padding: $reactTagMarginPadding $reactTagMarginPadding * 2;
+  overflow-y: auto;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  font-size: 1rem;
+  background: white;
+  color: $reactTagColorText;
+  border: 1px solid $reactTagColorGray;
+  border-radius: $reactTagBorderRadius;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  > * {
+    margin: $reactTagMarginPadding;
+  }
+
+  @at-root #{&}__input {
+    width: auto;
+    flex-grow: 1;
+    height: $reactTagHeight - 0.5;
+    padding: 0 0 0 $reactTagMarginPadding;
+    margin: 0 $reactTagMarginPadding;
+
+    font-size: $reactTagFontSize;
+    line-height: 1;
+
+    background: transparent;
+    color: $reactTagColorText;
+    border: none;
+    border-radius: $reactTagBorderRadius;
+    outline: 0;
+    box-shadow: none;
+    -webkit-appearance: none;
+
+    &::placeholder,
+    &:-moz-placeholder,
+    &:-ms-input-placeholder,
+    &::-moz-placeholder,
+    &::-webkit-input-placeholder {
+      color: $reactTagColorText;
+      font-weight: 400;
+    }
+    &:focus {
+      border: none;
+    }
+  }
+
+  @at-root #{&}__tag {
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: $reactTagFontSize - 0.15;
+    line-height: 1;
+    background: $reactTagColorGray;
+    border-radius: $reactTagBorderRadius;
+  }
+
+  @at-root #{&}__tag__content {
+    outline: 0;
+    border: none;
+    white-space: nowrap;
+    padding: 0 $reactTagMarginPadding * 2.5;
+  }
+
+  @at-root #{&}__tag__remove {
+    position: relative;
+    height: $reactTagFontSize * 2;
+    width: $reactTagFontSize * 2;
+
+    font-size: $reactTagFontSize - 0.15;
+    cursor: pointer;
+    background: darken($reactTagColorGray, 5%);
+    border-top-right-radius: $reactTagBorderRadius;
+    border-bottom-right-radius: $reactTagBorderRadius;
+
+    &:before,
+    &:after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      content: " ";
+      height: $reactTagFontSize - 0.1;
+      width: 0.15em;
+      background-color: $reactTagColorText;
+    }
+    &:before {
+      transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    }
+    &:after {
+      transform: translateX(-50%) translateY(-50%) rotate(-45deg);
+    }
+
+    @at-root #{&}-readonly {
+      width: 0;
+      &:before,
+      &:after {
+        content: "";
+        width: 0;
+      }
+    }
+  }
+}
+
+// end of node_modules/@pathofdev/react-tag-input/src/styles/index.scss
+
+// Inputs Components
+.ThirdlyUI_InputRoot {
+  margin-bottom: 20px;
+  transition: border-color 0.15s ease-in-out;
+
+  .ThirdlyUI_InputLabel {
+    @extend .s14w600;
+    color: $dark-gray;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .ThirdlyUI_InputWrapper {
+    font-size: 14px;
+    font-weight: 400;
+    transition: inherit;
+    color: $main-text;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid $border;
+    display: flex;
+    align-items: center;
+    &:focus-within {
+      // border: 1px solid $primary;
+      // // date icon
+      // & svg[data-icon="calendar"] {
+      //   fill: $primary;
+      // }
+      // // select icon
+      // & .ThirdlyUI__dropdown-indicator {
+      //   & svg {
+      //     fill: $primary;
+      //   }
+      // }
+    }
+
+    .ThirdlyUI_Input {
+      @extend .s14w600;
+
+      color: inherit;
+      background-color: inherit;
+
+      width: 100%;
+      padding: 11px 16px;
+
+      outline: none;
+      border-radius: inherit;
+      border: 0;
+
+      &::placeholder {
+        color: #c0ccda;
+      }
+      &:disabled {
+        color: #c0ccda;
+      }
+    }
+    .ThirdlyUI_InputTextarea {
+      @extend .ThirdlyUI_Input;
+      resize: none;
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: white;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 2px;
+        background-color: #acacac;
+      }
+      scrollbar-color: #acacac white;
+      scrollbar-width: thin;
+    }
+    .ThirdlyUI_InputSelect {
+      width: 100%;
+      color: inherit;
+      background-color: inherit;
+      border-radius: inherit;
+    }
+    .ThirdlyUI_InputTag {
+      .react-tag-input {
+        padding: 0;
+        border: 0;
+      }
+      .react-tag-input__input {
+        @extend .ThirdlyUI_Input;
+        width: unset;
+        height: 100%;
+        margin: 0;
+        padding: 13px 16px;
+      }
+      .react-tag-input__tag {
+        background: $primary;
+        color: white;
+      }
+      .react-tag-input__tag__content {
+        cursor: text;
+      }
+      .react-tag-input__tag__remove {
+        background: $primary;
+        color: white;
+      }
+      .react-tag-input__tag__remove:hover {
+        background: #4279f1;
+      }
+      .react-tag-input__tag__remove::before,
+      .react-tag-input__tag__remove::after {
+        background: white;
+      }
+    }
+    .ThirdlyUI_InputDate {
+      @extend .ThirdlyUI_Input;
+      padding: 10px 16px;
+      box-shadow: 0 0;
+      input {
+        @extend .ThirdlyUI_Input;
+        padding: 0;
+        &:focus {
+          border: 0;
+        }
+      }
+    }
+
+    .ThirdlyUI_InputTag {
+      width: 100%;
+    }
+
+    .react-tag-input__tag__remove {
+      border-top-left-radius: 3px;
+      border-bottom-left-radius: 3px;
+    }
+
+    .ThirdlyUI_InputAdornments {
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+    }
+
+    .ThirdlyUI_InputSelectBefore {
+      .ThirdlyUI_InputRoot {
+        margin-bottom: 0;
+
+        .ThirdlyUI_InputWrapper {
+          border: none;
+          width: 100px;
+        }
+        .ThirdlyUI_InputWrapper > div {
+          width: 100px;
+        }
+      }
+    }
+  }
+
+  .ThirdlyUI_RadioGroup {
+    @extend .s14w600;
+    transition: inherit;
+    color: $main-text;
+    margin-bottom: 5px;
+  }
+
+  .ThirdlyUI_Checkbox {
+    @extend .s14w600;
+    transition: inherit;
+    color: $main-text;
+  }
+
+  .ThirdlyUI_DateWrapper {
+    display: flex;
+    align-items: center;
+    .ThirdlyUI_DateArrow {
+      cursor: pointer;
+      padding: 5px 7px;
+    }
+    .ThirdlyUI_DateArrow:first-child {
+      margin-right: 14px;
+    }
+    .ThirdlyUI_DateArrow:last-child {
+      margin-left: 14px;
+    }
+    .ThirdlyUI_InputWrapper {
+      flex-grow: 1;
+    }
+  }
+
+  .ThirdlyUI_InputError {
+    border: 1px solid $red;
+    &:focus-within {
+      border: 1px solid $red;
+    }
+  }
+
+  .ThirdlyUI_InputErrorMessage {
+    @extend .s12w500;
+    color: $red;
+    margin-top: 4px;
+  }
+}

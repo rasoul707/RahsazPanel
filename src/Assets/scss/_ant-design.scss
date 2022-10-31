@@ -1,0 +1,43 @@
+// Spin
+.ant-spin-dot-item {
+  background-color: #f6891f;
+}
+
+// Table
+.ant-table-thead > tr > th {
+  background: transparent;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  background-color: transparent;
+}
+
+// Modal
+.ant-modal-body {
+  max-height: 65vh;
+  overflow-y: scroll;
+
+  @media (max-width: 576px) {
+    max-height: 100%;
+  }
+}
+.ant-modal-content {
+  border-radius: 8px;
+  @media (max-width: 576px) {
+    border-radius: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+}
+.ant-modal-header {
+  border-radius: 8px 8px 0 0;
+}

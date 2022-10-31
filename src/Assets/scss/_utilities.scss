@@ -1,0 +1,185 @@
+$primary: #1458ea;
+$green: #20cf7e;
+$orange: #ff7d50;
+$red: #ff0046;
+$pink: #ff007f;
+$purple: #8338ec;
+$yellow: #ffbe0b;
+$main-text: #001738;
+$navy-blue: #182c49;
+$dark-gray: #8492a6;
+$border: #e5e9f2;
+$background: #f5f6f8;
+$light-gray: #f9fafc;
+$white: #ffffff;
+
+// TEXT COLORS
+
+.color-primary {
+  color: #1458ea;
+}
+.color-green {
+  color: #20cf7e;
+}
+.color-orange {
+  color: #ff7d50;
+}
+.color-red {
+  color: #ff0046;
+}
+.color-pink {
+  color: #ff007f;
+}
+.color-purple {
+  color: #8338ec;
+}
+.color-yellow {
+  color: #ffbe0b;
+}
+.color-main-text {
+  color: #001738;
+}
+.color-navy-blue {
+  color: #182c49;
+}
+.color-dark-gray {
+  color: #8492a6;
+}
+.color-border {
+  color: #e5e9f2;
+}
+.color-background {
+  color: #f5f6f8;
+}
+.color-light-gray {
+  color: #f9fafc;
+}
+.color-white {
+  color: #ffffff;
+}
+
+// BACKGROUND COLORS
+.bg-primary {
+  background: #1458ea;
+}
+.bg-green {
+  background: #20cf7e;
+}
+.bg-orange {
+  background: #ff7d50;
+}
+.bg-red {
+  background: #ff0046;
+}
+.bg-pink {
+  background: #ff007f;
+}
+.bg-purple {
+  background: #8338ec;
+}
+.bg-yellow {
+  background: #ffbe0b;
+}
+.bg-main-text {
+  background: #001738;
+}
+.bg-navy-blue {
+  background: #182c49;
+}
+.bg-dark-gray {
+  background: #8492a6;
+}
+.bg-border {
+  background: #e5e9f2;
+}
+.bg-background {
+  background: #f5f6f8;
+}
+.bg-light-gray {
+  background: #f9fafc;
+}
+.bg-white {
+  background: #ffffff;
+}
+
+// TYPOGRAPHY
+
+.font-Roboto {
+  font-family: "Roboto", serif;
+  font-style: normal;
+}
+
+.font-Raleway {
+  font-family: "Iran Yekan", serif;
+  font-style: normal;
+}
+
+.s20w700 {
+  font-size: 20px;
+  font-weight: 700;
+  @extend .font-Raleway;
+}
+.s18w800 {
+  font-size: 18px;
+  font-weight: 800;
+  @extend .font-Raleway;
+}
+.s18w600 {
+  font-size: 18px;
+  font-weight: 600;
+  @extend .font-Raleway;
+}
+
+.s16w700 {
+  font-size: 16px;
+  font-weight: 700;
+  @extend .font-Raleway;
+}
+
+.s16w600 {
+  font-size: 16px;
+  font-weight: 600;
+  @extend .font-Raleway;
+}
+
+.s14w700 {
+  font-size: 14px;
+  font-weight: 700;
+  @extend .font-Raleway;
+}
+
+.s14w600 {
+  font-size: 14px;
+  font-weight: 600;
+  @extend .font-Raleway;
+}
+
+.s14w500 {
+  font-size: 14px;
+  font-weight: 500;
+  @extend .font-Raleway;
+}
+
+.s12w700 {
+  font-size: 12px;
+  font-weight: 700;
+  @extend .font-Roboto;
+}
+
+.s12w600 {
+  font-size: 12px;
+  font-weight: 600;
+  @extend .font-Raleway;
+}
+
+.s12w500 {
+  font-size: 12px;
+  font-weight: 500;
+  @extend .font-Roboto;
+}
+
+.s10w500 {
+  font-size: 10px;
+  font-weight: 500;
+  @extend .font-Roboto;
+}

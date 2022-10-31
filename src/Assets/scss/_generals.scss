@@ -1,0 +1,62 @@
+.transparent-button {
+  background: none;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  svg {
+    margin-left: 4px;
+  }
+}
+
+.table-text {
+}
+
+.color-link {
+  color: #1f75f6;
+}
+
+.color-error {
+  color: #ff0000;
+}
+
+.table-image {
+  min-width: 65px;
+  height: 65px;
+}
+
+hr {
+  background: #ebebeb;
+  opacity: 0.3;
+}
+
+.no-data-msg {
+  display: block;
+  padding: 12px;
+  text-align: center;
+  width: 100%;
+}
+
+/* ----------------------------------------------------- START CUSTOM SCROLLBAR ----------------------------------------------------- */
+
+.custom-scrollbar {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #90a4ae #b1bdd1;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 10px;
+  background-color: #b1bdd1;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 6px #90a4ae;
+  background-color: #90a4ae;
+}
+/* ----------------------------------------------------- END CUSTOM SCROLLBAR ----------------------------------------------------- */
