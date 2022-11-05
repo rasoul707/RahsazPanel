@@ -51,7 +51,7 @@
     "test": "react-scripts --openssl-legacy-provider test",
     "eject": "react-scripts --openssl-legacy-provider eject",
     "watch": "npm-watch",
-    "build_start": "react-scripts --openssl-legacy-provider build"
+    "build_start": "react-scripts --openssl-legacy-provider build && serve -s build -l 3001"
   },
   "watch": {
     "build": {
