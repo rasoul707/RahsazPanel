@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatDate } from "Utils/helperFunction";
 import { Tag } from "antd";
@@ -31,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
+
 
   const [status, setStatus] = useState("comment");
   const [reload, setReload] = useState(false);
@@ -105,15 +104,15 @@ export default function BlogPage() {
           record?.status === "waiting_for_response"
             ? "orange"
             : record?.status === "responded"
-            ? "green"
-            : "red";
+              ? "green"
+              : "red";
 
         const text =
           record?.status === "waiting_for_response"
             ? "منتظر پاسخ"
             : record?.status === "responded"
-            ? "پاسخ داده شده"
-            : "غیر فعال";
+              ? "پاسخ داده شده"
+              : "غیر فعال";
         return <Tag color={color}>{text}</Tag>;
       },
     },
@@ -152,9 +151,8 @@ export default function BlogPage() {
         onConfirm={deleteComment}
         onCancel={() => setShowDeleteModal(false)}
         loading={deleteLoading}
-        text={`آیا برای حذف کردن این ${
-          status === "comment" ? "دیدگاه" : "پرسش"
-        } مطمئن هستید؟`}
+        text={`آیا برای حذف کردن این ${status === "comment" ? "دیدگاه" : "پرسش"
+          } مطمئن هستید؟`}
       />
 
       {showAnswerModal && (

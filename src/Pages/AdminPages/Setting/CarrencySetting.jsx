@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { NAString, formatPrice } from "Utils/helperFunction";
 
@@ -23,7 +22,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function CarrencySetting({ reload, setReload }) {
   const classes = useStyles();
-  const history = useHistory();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditCurrencyModal, setShowEditCurrencyModal] = useState(false);
 

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Spin } from "antd";
 import { Bar } from "react-chartjs-2";
@@ -17,9 +16,7 @@ import moment from "moment";
 // Components
 import { DateRangePicker } from "Components/Inputs";
 
-// Assets
-import { ReactComponent as Svg } from "Assets/img/icons/sidebar-dashboard.svg";
-import LoginBg from "Assets/img/login-bg.png";
+
 
 // Services
 import { getOrdersReportApi } from "Services";
@@ -48,7 +45,6 @@ const options = {
 
 export default function OrdersReport({ setCsvData }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState({});

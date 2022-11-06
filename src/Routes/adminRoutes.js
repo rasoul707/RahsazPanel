@@ -25,6 +25,7 @@ import ViewMail from "Pages/AdminPages/Mail/ViewMail";
 import Report from "Pages/AdminPages/Report";
 import Customer from "Pages/AdminPages/Customer";
 import AddEditCustomer from "Pages/AdminPages/Customer/AddEditCustomer";
+import { AddOrders } from "Pages/AdminPages/Orders/AddOrders";
 
 // icons
 import { ReactComponent as DashboardIcon } from "Assets/img/icons/sidebar-dashboard.svg";
@@ -41,7 +42,7 @@ import { ReactComponent as MailIcon } from "Assets/img/icons/sidebar-mail.svg";
 import { ReactComponent as ReportIcon } from "Assets/img/icons/sidebar-report.svg";
 import { ReactComponent as CustomerIcon } from "Assets/img/icons/sidebar-customer.svg";
 import { ReactComponent as OrderIcon } from "Assets/img/icons/sidebar-order.svg";
-import { AddOrders } from "Pages/AdminPages/Orders/AddOrders";
+
 
 const adminRoutes = [
   // DASHBOARD
@@ -95,7 +96,7 @@ const adminRoutes = [
     path: "/orders",
     name: "لیست سفارشات",
     icon: <OrderIcon />,
-    component:Orders,
+    component: Orders,
     exact: true,
     showInMenu: true,
     layout: "/admin",

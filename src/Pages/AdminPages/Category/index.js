@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Spin } from "antd";
 import { NAString } from "Utils/helperFunction";
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 }));
 export default function CategoryPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("main-category"); // ["main-category", "technical-maps"]
   const [reload, setReload] = useState(false);
@@ -55,34 +55,34 @@ export default function CategoryPage() {
   const [mainCategoriesChildren, setMainCategoriesChildren] = useState([]);
   const [tachnicalMapsChildren, setTachnicalMapsChildren] = useState([]);
   const [parentColumnName, setParentColumnName] = useState(null);
-  const updateOrder = async (e,index) => {
+  const updateOrder = async (e, index) => {
     setLoading(true);
-    await updateOrderApi(e,index)
-    .then(res => {
-      setLoading(false);
-      history.push("/admin/category");
-      toast.success("الویت با موفقیت تغییر یافت");
-    })
-    .catch(err => {
-      console.log(err);
-      setLoading(false);
-    });
-   
+    await updateOrderApi(e, index)
+      .then(res => {
+        setLoading(false);
+        navigate("/admin/category");
+        toast.success("الویت با موفقیت تغییر یافت");
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      });
+
   };
 
   const handelMenu = async () => {
     setLoading(true);
     await updateMenuApi()
-    .then(res => {
-      setLoading(false);
-      history.push("/admin/category");
-      toast.success("منو با موفقیت بروز رسانی شد");
-    })
-    .catch(err => {
-      console.log(err);
-      setLoading(false);
-    });
-   
+      .then(res => {
+        setLoading(false);
+        navigate("/admin/category");
+        toast.success("منو با موفقیت بروز رسانی شد");
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      });
+
   };
 
 
@@ -157,22 +157,22 @@ export default function CategoryPage() {
           withoutControl
           rules={{ required: true }}
           label="الویت"
-          onChange={e => updateOrder(e,record?.id)}
+          onChange={e => updateOrder(e, record?.id)}
           defaultValue={NAString(record?.order)}
-         />
+        />
       )
     },
     ...(parentColumnName
       ? [
-          {
-            title: parentColumnName,
-            render: (_text, record) => (
-              <span className="table-text">
-                {NAString(record.parent?.name)}
-              </span>
-            ),
-          },
-        ]
+        {
+          title: parentColumnName,
+          render: (_text, record) => (
+            <span className="table-text">
+              {NAString(record.parent?.name)}
+            </span>
+          ),
+        },
+      ]
       : []),
     {
       title: "",
@@ -182,16 +182,16 @@ export default function CategoryPage() {
             items={[
               ...(selectedChildren?.id === 9
                 ? [
-                    <button
-                      onClick={() =>
-                        history.push(
-                          `/admin/category/edit-technical-map/${record.id}`,
-                        )
-                      }
-                    >
-                      <EditIcon /> <span>مشاهده کالاهای دسته</span>
-                    </button>,
-                  ]
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/admin/category/edit-technical-map/${record.id}`,
+                      )
+                    }
+                  >
+                    <EditIcon /> <span>مشاهده کالاهای دسته</span>
+                  </button>,
+                ]
                 : []),
               <button onClick={() => setShowEditModal(record)}>
                 <EditIcon /> <span>ویرایش</span>

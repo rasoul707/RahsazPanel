@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles, Grid, Container } from "@material-ui/core";
 import { Spin } from "antd";
 import { useForm, FormProvider } from "react-hook-form";
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function AddEditMember() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const methods = useForm();
   const { id } = useParams();
   const isEdit = id;
@@ -50,7 +50,7 @@ export default function AddEditMember() {
       .then(() => {
         setDeleteLoading(false);
         setShowDeleteModal(false);
-        history.push("/admin/team");
+        navigate("/admin/team");
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -89,7 +89,7 @@ export default function AddEditMember() {
     await api(body)
       .then(() => {
         setLoading(false);
-        history.push("/admin/team");
+        navigate("/admin/team");
       })
       .catch(() => {
         setLoading(false);

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles, Grid } from "@material-ui/core";
 import { useForm, FormProvider } from "react-hook-form";
 import { Spin } from "antd";
@@ -86,7 +85,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
   const methods = useForm();
 
   const [status, setStatus] = useState("slider"); // ["slider", "products", "ads"]
@@ -228,8 +226,8 @@ export default function BlogPage() {
       status === "slider"
         ? getWebsiteSlidersApi
         : status === "products"
-        ? getWebsiteGroupsApi
-        : getWebsiteAdsApi;
+          ? getWebsiteGroupsApi
+          : getWebsiteAdsApi;
     const data = await getApi(status === "products" && selectedGroup);
     setDefaultValues(data);
     setRightBannerImage(data?.right_banner_image);
@@ -416,7 +414,7 @@ export default function BlogPage() {
                           color="#FF0000"
                           iconColor="#FF0000"
                           style={{ marginTop: "28px" }}
-                          // onClick={addAttribute}
+                        // onClick={addAttribute}
                         >
                           <ReplaceIcon />
                           تنظیم مجدد دسته
@@ -436,7 +434,7 @@ export default function BlogPage() {
                       isClearable
                       api={getProductsForFormApi}
                       onChange={handleAddPropertyToGroup}
-                      // sendFullSelectedItem
+                    // sendFullSelectedItem
                     />
                   </Grid>
                   {!!defaultValues?.products?.length ? (

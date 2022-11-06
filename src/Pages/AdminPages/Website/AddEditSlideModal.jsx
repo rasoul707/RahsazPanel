@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Spin, Modal } from "antd";
 import { useForm, FormProvider } from "react-hook-form";
@@ -7,8 +6,6 @@ import { useForm, FormProvider } from "react-hook-form";
 // Components
 import { NormalInput, FileInput } from "Components/Inputs";
 
-// Assets
-import { ReactComponent as Svg } from "Assets/img/icons/sidebar-dashboard.svg";
 
 // Services
 import { addSliderToWebsiteApi, editSliderFromWebsiteApi } from "Services";

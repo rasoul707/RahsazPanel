@@ -17,13 +17,15 @@ import theme from "Utils/theme";
 import "antd/dist/antd.css";
 import "Assets/scss/styles.scss";
 
+
+
 // video-react
 import "video-react/dist/video-react.css";
 
 // Configure JSS
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
-
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
   <StrictMode>
     <ConfigProvider direction="rtl" locale={locale}>
       <StylesProvider jss={jss}>
@@ -33,9 +35,7 @@ ReactDOM.render(
         </ThemeProvider>
       </StylesProvider>
     </ConfigProvider>
-  </StrictMode>,
-
-  document.getElementById("root"),
+  </StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { NAString, formatPrice } from "Utils/helperFunction";
 
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -136,7 +136,7 @@ export default function BlogPage() {
             items={[
               <button
                 onClick={() =>
-                  history.push(`/admin/product/edit-product/${record.id}`)
+                  navigate(`/admin/product/edit-product/${record.id}`)
                 }
               >
                 <EditIcon /> <span>ویرایش</span>
@@ -172,7 +172,7 @@ export default function BlogPage() {
           right={<PageTitle>محصولات من</PageTitle>}
           center={<div />}
           left={
-            <Button onClick={() => history.push("/admin/product/add-product")}>
+            <Button onClick={() => navigate("/admin/product/add-product")}>
               <AddIcon /> افزودن محصول
             </Button>
           }

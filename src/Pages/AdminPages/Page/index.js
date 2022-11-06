@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { NAString } from "Utils/helperFunction";
 
 // Components
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 }));
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [parentData, setParentData] = useState([]);
@@ -63,7 +63,7 @@ export default function BlogPage() {
             items={[
               <button
                 onClick={() =>
-                  history.push(`/admin/page/edit-page/${record.id}`)
+                  navigate(`/admin/page/edit-page/${record.id}`)
                 }
               >
                 <EditIcon /> <span>ویرایش</span>

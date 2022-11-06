@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Spin } from "antd";
 
 // Components
 
-// Assets
-import { ReactComponent as Svg } from "Assets/img/icons/sidebar-dashboard.svg";
-import LoginBg from "Assets/img/login-bg.png";
 
 // Services
-import {} from "Services";
+import { } from "Services";
 
 const useStyles = makeStyles(theme => ({
   wrapper: {},
@@ -18,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function LoginPage() {
   const classes = useStyles();
-  const history = useHistory();
+
 
   const [loading, setLoading] = useState(false);
 

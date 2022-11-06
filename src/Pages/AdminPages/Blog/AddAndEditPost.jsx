@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles, Grid } from "@material-ui/core";
 import { Spin } from "antd";
 import { useForm, FormProvider } from "react-hook-form";
@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function AddEditBolgPost() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const methods = useForm();
   const { id } = useParams();
   const isEdit = id;
@@ -101,7 +101,7 @@ export default function AddEditBolgPost() {
     setLoading(true);
     await api(data)
       .then(() => {
-        history.push("/admin/blog");
+        navigate("/admin/blog");
         setLoading(false);
       })
       .catch(() => {
@@ -120,7 +120,7 @@ export default function AddEditBolgPost() {
                   right={
                     <button
                       className="transparent-button"
-                      onClick={() => history.push(`/admin/blog`)}
+                      onClick={() => navigate(`/admin/blog`)}
                     >
                       <BackArrow /> <span>بازگشت به نوشته‌ها</span>
                     </button>

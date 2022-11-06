@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatPrice, NAString } from "Utils/helperFunction";
 
@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function StoreRoomReport({ setCsvData }) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [reload, setReload] = useState(false);
   const [showQuickEditModal, setShowQuickEditModal] = useState(false);

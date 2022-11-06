@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { makeStyles, Grid } from "@material-ui/core";
 import { Spin } from "antd";
 import { useForm, FormProvider } from "react-hook-form";
@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function AddEditMember() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const methods = useForm();
   const { id } = useParams();
   const isEdit = id;
@@ -82,8 +82,8 @@ export default function AddEditMember() {
   }, []);
 
   const onSubmit = async data => {
-    let allowed_user_package_ids=data?.allowed_user_package_ids?.map(p=>p.value)
-    let dataForSend={...data,allowed_user_package_ids}
+    let allowed_user_package_ids = data?.allowed_user_package_ids?.map(p => p.value)
+    let dataForSend = { ...data, allowed_user_package_ids }
     console.log("dataForSend", dataForSend);
 
 
@@ -95,7 +95,7 @@ export default function AddEditMember() {
     await api(body)
       .then(() => {
         setLoading(false);
-        history.push("/admin/coupon");
+        navigate("/admin/coupon");
       })
       .catch(() => {
         setLoading(false);

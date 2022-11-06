@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { NAString } from "Utils/helperFunction";
 
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [status, setStatus] = useState("comment");
   const [reload, setReload] = useState(false);
@@ -76,7 +76,7 @@ export default function BlogPage() {
             items={[
               <button
                 onClick={() =>
-                  history.push(`/admin/team/edit-member/${record?.id}`)
+                  navigate(`/admin/team/edit-member/${record?.id}`)
                 }
               >
                 <EditIcon /> <span>ویرایش</span>

@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // Components
 import { Button, RadioButton } from "Components/Button";
 import FileCard from "Components/Card/FileCard";
@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 }));
 export default function LoginPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const methods = useForm();
   const { id } = useParams();
   const isEdit = id;
@@ -257,7 +257,7 @@ export default function LoginPage() {
     setLoading(true);
     await (isEdit ? editProductApi : addProductApi)(data)
       .then(() => {
-        history.push("/admin/product");
+        navigate("/admin/product");
         setLoading(false);
       })
       .catch(() => {
@@ -284,7 +284,7 @@ export default function LoginPage() {
                   <PageTemplate
                     right={
                       <button
-                        onClick={() => history.push("/admin/product")}
+                        onClick={() => navigate("/admin/product")}
                         className="transparent-button"
                       >
                         <BackArrow /> <span>بازگشت به لیست</span>

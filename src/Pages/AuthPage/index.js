@@ -1,15 +1,24 @@
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import RouteWithSubRoutes from "Routes/RouteWithSubRoutes";
 import LoginPage from "Pages/AuthPage/LoginPage";
 import RegisterPage from "Pages/AuthPage/RegisterPage";
 import ForgetPage from "./ForgetPage";
 
 export default function AuthPage() {
+  const location = useLocation()
+
   return (
     //  begin::Content body
     <div>
-      <Switch>
-        <RouteWithSubRoutes path="/auth/login" component={LoginPage} />
+      <Routes>
+        <Route path="/auth/login" element={<LoginPage />} />
+        <Route path="/auth/registration" component={<RegisterPage />} />
+        <Route path="/auth/forgot-password" component={<ForgetPage />} />
+        {/*
+        <RouteWithSubRoutes
+          path="/auth/login"
+          component={LoginPage}
+        />
         <RouteWithSubRoutes
           path="/auth/registration"
           component={RegisterPage}
@@ -17,19 +26,11 @@ export default function AuthPage() {
         <RouteWithSubRoutes
           path="/auth/forgot-password"
           component={ForgetPage}
-        />
-        <Redirect from="/auth" exact={true} to="/auth/login" />
-        <Route
-          render={props => (
-            <Redirect
-              to={{
-                pathname: "/auth/login",
-                state: { from: props.location },
-              }}
-            />
-          )}
-        />
-      </Switch>
+        /> 
+        */}
+        <Route path="/auth" element={<Navigate replace to="/auth/login" />} />
+        <Route path="*" element={<Navigate replace to="/auth/login" state={{ from: location }} />} />
+      </Routes>
     </div>
     //end::Content body
   );

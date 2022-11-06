@@ -1,7 +1,7 @@
 //Material
 import { Hidden, List, Drawer, makeStyles } from "@material-ui/core";
 import clsx from "clsx";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 //Styles
 import sidebarStyle from "Assets/jss/sidebar.style";
 // helper function
@@ -21,14 +21,14 @@ const useStyles = makeStyles(sidebarStyle);
 export default function SideBar(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const user = useSelector(state => state?.auth);
   let routes = routeWithFaName(user?.user_permissions);
   const handleLogout = async e => {
     e.preventDefault();
     try {
       await dispatch(logout());
-      history.replace("/auth/login");
+      navigate("/auth/login");
     } catch (err) {
       console.log("err Logout from_____", err);
     }

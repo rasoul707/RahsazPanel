@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { NAString, formatPrice } from "Utils/helperFunction";
 
@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function OrderPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -110,7 +110,7 @@ export default function OrderPage() {
             items={[
               <button
                 onClick={() =>
-                  history.push(`/admin/orders/edit-order/${record.id}`)
+                  navigate(`/admin/orders/edit-order/${record.id}`)
                 }
               >
                 <ViewIcon /> <span>مشاهده جزئیات سفارش</span>
@@ -159,7 +159,7 @@ export default function OrderPage() {
           }
           left={
             // <Button
-            // // onClick={() => history.push("/admin/orders/add-order")}
+            // // onClick={() => navigate("/admin/orders/add-order")}
             // >
             //   <AddIcon /> افزودن سفارش
             // </Button>

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table, Spin, Pagination } from "antd";
 import { Grid } from "@material-ui/core";
@@ -8,12 +7,10 @@ import { componentPropsValidator } from "Utils/helperFunction";
 // Components
 import PageHeader from "Components/PageTemplate/PageHeader";
 
-// Assets
-import { ReactComponent as Svg } from "Assets/img/icons/sidebar-dashboard.svg";
-import LoginBg from "Assets/img/login-bg.png";
+
 
 // Services
-import {} from "Services";
+import { } from "Services";
 
 const useStyles = makeStyles(theme => ({
   cardPaginationWrapper: {
@@ -39,7 +36,6 @@ export default function TableComponent({
   setTableDataForParent, // set table data for parent component
 }) {
   const classes = useStyles();
-  const history = useHistory();
   // handle header params
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [searchValue, setSearchValue] = useState("");
@@ -88,9 +84,9 @@ export default function TableComponent({
       // date range
       ...(showRangeFilter
         ? {
-            start_date: startDate,
-            end_date: endDate,
-          }
+          start_date: startDate,
+          end_date: endDate,
+        }
         : {}),
     };
     if (customParamsSort) {

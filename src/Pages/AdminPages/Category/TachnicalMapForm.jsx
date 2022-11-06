@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { makeStyles, Grid } from "@material-ui/core";
 import { Spin } from "antd";
 import { useForm, FormProvider } from "react-hook-form";
@@ -42,7 +42,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function TechnicalMapForm() {
   const classes = useStyles();
-  const history = useHistory();
   const methods = useForm();
   const { id } = useParams();
   const isEdit = id;
@@ -59,7 +58,7 @@ export default function TechnicalMapForm() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const deleteProductFromList = () => {
     setDeleteLoading(true);
-    removeProductFromMapApi(showDeleteModal,id)
+    removeProductFromMapApi(showDeleteModal, id)
       .then(() => {
         setReload(!reload);
         setDeleteLoading(false);
@@ -143,7 +142,7 @@ export default function TechnicalMapForm() {
                   defaultValue={mapImage?.path}
                 />
                 <Button onClick={submitSetImage} width="100%">
-            <AddIcon /> ثبت تصویر
+                  <AddIcon /> ثبت تصویر
                 </Button>
               </Grid>
               <Grid item xs={12} sm={6}>

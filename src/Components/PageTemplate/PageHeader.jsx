@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+
 import { makeStyles } from "@material-ui/core/styles";
-import { Spin } from "antd";
 
 // Components
 import { SelectInput, DateRangePicker } from "Components/Inputs";
@@ -12,7 +11,7 @@ import { ReactComponent as CloseIcon } from "Assets/img/icons/close.svg";
 import LoginBg from "Assets/img/login-bg.png";
 
 // Services
-import {} from "Services";
+import { } from "Services";
 
 const useStyles = makeStyles(theme => ({
   tableHeaderWrapper: {
@@ -73,7 +72,7 @@ export default function PageeHeader({
   handleDateRangeChange,
 }) {
   const classes = useStyles();
-  const history = useHistory();
+
 
   // handle search value
   const [search, setSearch] = useState("");

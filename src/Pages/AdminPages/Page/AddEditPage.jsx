@@ -3,7 +3,7 @@ import { Spin } from "antd";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Components
 import { Button } from "Components/Button";
@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function LoginPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const methods = useForm();
   const { id } = useParams();
   const isEdit = id;
@@ -97,7 +97,7 @@ export default function LoginPage() {
     setLoading(true);
     await (isEdit ? editPageApi : addPageApi)(data)
       .then(() => {
-        history.push("/admin/page");
+        navigate("/admin/page");
         setLoading(false);
       })
       .catch(() => {
@@ -117,7 +117,7 @@ export default function LoginPage() {
                   <PageTemplate
                     right={
                       <button
-                        onClick={() => history.push("/admin/page")}
+                        onClick={() => navigate("/admin/page")}
                         className="transparent-button"
                       >
                         <BackArrow /> <span>بازگشت به لیست</span>

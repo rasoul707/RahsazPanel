@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { makeStyles, Grid } from "@material-ui/core";
 import { Spin } from "antd";
 import { useForm, FormProvider } from "react-hook-form";
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function AddEditCustomer() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const methods = useForm();
   const { id } = useParams();
   const isEdit = id;
@@ -79,7 +79,7 @@ export default function AddEditCustomer() {
       setLoading(true);
       await api(data)
         .then(() => {
-          history.push("/admin/customer");
+          navigate("/admin/customer");
           setLoading(false);
         })
         .catch(() => {

@@ -19,31 +19,29 @@ export default function RouteWithSubRoutes({
     ));
   }
 
-  return (
-    <Route {...props}>
-      {routeProps => {
-        if (typeof children === "function") {
-          return <>{children(routeProps)}</>;
-        }
+  return <Route {...props}>
+    {routeProps => {
+      if (typeof children === "function") {
+        return <>{children(routeProps)}</>;
+      }
 
-        if (!routeProps.match) {
-          return null;
-        }
-
-        if (children) {
-          return <>{children}</>;
-        }
-
-        if (component) {
-          return <>{React.createElement(component, routeProps)}</>;
-        }
-
-        if (render) {
-          return <>{render(routeProps)}</>;
-        }
-
+      if (!routeProps.match) {
         return null;
-      }}
-    </Route>
-  );
+      }
+
+      if (children) {
+        return <>{children}</>;
+      }
+
+      if (component) {
+        return <>{React.createElement(component, routeProps)}</>;
+      }
+
+      if (render) {
+        return <>{render(routeProps)}</>;
+      }
+
+      return null;
+    }}
+  </Route>;
 }

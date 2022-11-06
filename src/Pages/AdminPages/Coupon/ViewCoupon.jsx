@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { makeStyles, Grid } from "@material-ui/core";
 import { Spin } from "antd";
 import { ConfirmDeleteModal } from "Components/Modal";
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function AddEditMember() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ export default function AddEditMember() {
       .then(() => {
         setDeleteLoading(false);
         setShowDeleteModal(false);
-        history.push("/admin/coupon");
+        navigate("/admin/coupon");
       })
       .catch(() => {
         setDeleteLoading(false);

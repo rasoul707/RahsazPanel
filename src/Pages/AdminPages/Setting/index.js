@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles, Grid } from "@material-ui/core";
 import { useForm, FormProvider } from "react-hook-form";
 import { Spin } from "antd";
@@ -39,7 +38,6 @@ const useStyles = makeStyles(theme => ({
 }));
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
   const methods = useForm();
   const [status, setStatus] = useState("tax"); // ["tax", "form", "info", "currency"]
   const [reload, setReload] = useState(false);

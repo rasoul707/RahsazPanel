@@ -1,4 +1,4 @@
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -33,20 +33,20 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
   },
   form: {
-    width:"100%",
+    width: "100%",
     "& > h4": {
       marginBottom: 12,
       ...theme.font.s16w700
     },
-    "& input":{
-      color:'black !important'
+    "& input": {
+      color: 'black !important'
     }
   },
 }));
 
 export default function LoginPage() {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -62,7 +62,7 @@ export default function LoginPage() {
       setLoading(true);
       await dispatch(login({ email, password }));
       setLoading(false);
-      history.replace("/admin");
+      navigate("/admin");
     } catch (err) {
       console.log("err Login from_____", err);
       setLoading(false)
@@ -114,7 +114,7 @@ export default function LoginPage() {
 
             <div
               className="form-group d-md-flex"
-              // style={{ visibility: "hidden" }}
+            // style={{ visibility: "hidden" }}
             >
               <div style={{ width: "20%" }}>
                 <label

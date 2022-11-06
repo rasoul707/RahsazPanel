@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { NAString, formatDate } from "Utils/helperFunction";
 
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function CategoryPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [reload, setReload] = useState(false);
 
@@ -109,7 +109,7 @@ export default function CategoryPage() {
             items={[
               // <button
               //   onClick={() =>
-              //     history.push(
+              //     navigate(
               //       `/admin/category/edit-technical-map/${record.id}`,
               //     )
               //   }
@@ -118,7 +118,7 @@ export default function CategoryPage() {
               // </button>,
               <button
                 onClick={() =>
-                  history.push(`/admin/customer/edit-customer/${record?.id}`)
+                  navigate(`/admin/customer/edit-customer/${record?.id}`)
                 }
               >
                 <EditIcon /> <span>ویرایش</span>

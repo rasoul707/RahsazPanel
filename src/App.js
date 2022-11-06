@@ -24,7 +24,6 @@ function App() {
           <BrowserRouter basename={PUBLIC_URL}>
             {/* Render routes with provided `Layout`. */}
             <Routes />
-            
           </BrowserRouter>
         </Suspense>
       </PersistGate>

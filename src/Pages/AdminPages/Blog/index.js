@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatDate } from "Utils/helperFunction";
 
@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [status, setStatus] = useState("published");
   const [reload, setReload] = useState(false);
@@ -108,7 +108,7 @@ export default function BlogPage() {
               ),
               <button
                 onClick={() =>
-                  history.push(`/admin/blog/edit-post/${record?.id}`)
+                  navigate(`/admin/blog/edit-post/${record?.id}`)
                 }
               >
                 <EditIcon /> <span>ویرایش نوشته</span>
@@ -154,7 +154,7 @@ export default function BlogPage() {
             />
           }
           left={
-            <Button onClick={() => history.push("/admin/blog/add-post")}>
+            <Button onClick={() => navigate("/admin/blog/add-post")}>
               <AddIcon /> افزودن نوشته جدید
             </Button>
           }

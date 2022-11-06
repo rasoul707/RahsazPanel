@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatDate, NAString } from "Utils/helperFunction";
 
@@ -17,7 +16,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function CustomersReport({ setCsvData }) {
   const classes = useStyles();
-  const history = useHistory();
+
 
   const [reload, setReload] = useState(false);
 

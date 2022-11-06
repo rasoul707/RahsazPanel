@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatDate } from "Utils/helperFunction";
 
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [status, setStatus] = useState("active");
   const [reload, setReload] = useState(false);
@@ -129,7 +129,7 @@ export default function BlogPage() {
             />
           }
           left={
-            <Button onClick={() => history.push("/admin/coupon/add-coupon")}>
+            <Button onClick={() => navigate("/admin/coupon/add-coupon")}>
               <AddIcon /> افزودن کد تخفیف جدید
             </Button>
           }

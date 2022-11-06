@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { NAString, formatDate } from "Utils/helperFunction";
 
@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -101,7 +101,7 @@ export default function BlogPage() {
               </button>,
               <button
                 onClick={() =>
-                  history.push(`/admin/mail/view-mail/${record?.id}`)
+                  navigate(`/admin/mail/view-mail/${record?.id}`)
                 }
               >
                 <ViewIcon /> <span>مشاهده</span>

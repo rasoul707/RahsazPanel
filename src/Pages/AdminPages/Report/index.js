@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import fileDownload from "js-file-download";
 
@@ -20,7 +19,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const history = useHistory();
 
   const [status, setStatus] = useState("orders");
   const [csvData, setCsvData] = useState([]);

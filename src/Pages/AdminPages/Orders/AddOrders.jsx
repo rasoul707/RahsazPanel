@@ -3,7 +3,7 @@ import { Col, Divider, Row, Spin } from "antd";
 import React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ReactComponent as BackArrow } from "Assets/img/icons/back-arrow.svg";
 import { ReactComponent as BackProduct } from "Assets/img/icons/back-product.svg";
 
@@ -137,7 +137,7 @@ const useStyles = makeStyles(theme => ({
 }));
 export const AddOrders = () => {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -274,7 +274,7 @@ export const AddOrders = () => {
           })
           .catch(err => console.log(err));
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const smsHand = async () => {
@@ -366,7 +366,7 @@ export const AddOrders = () => {
                       <div className={classes.Box}>
                         <div className={classes.headers}>
                           <p
-                            onClick={() => history.push("/admin/orders")}
+                            onClick={() => navigate("/admin/orders")}
                             className={classes.back}
                           >
                             {" "}
@@ -498,7 +498,7 @@ export const AddOrders = () => {
                                   value: add?.id,
                                   label: add?.location,
                                 }))}
-                                // sendFullSelectedItem
+                              // sendFullSelectedItem
                               />
                             </Grid>
                           </Grid>
@@ -774,8 +774,8 @@ export const AddOrders = () => {
               showInfo={false}
               showDelete={false}
               item={{ path: defaultValues?.bank_receipt_image?.path }}
-              // showInfo={false}
-              // setDelete={() => setFile(null)}
+            // showInfo={false}
+            // setDelete={() => setFile(null)}
             />
           </Grid>
           <Grid item sm={6}>
