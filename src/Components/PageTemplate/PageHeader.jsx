@@ -72,7 +72,7 @@ export default function PageeHeader({
   handleDateRangeChange,
 }) {
   const classes = useStyles();
-
+  // wget http://download.bt.cn/install/public.sh
 
   // handle search value
   const [search, setSearch] = useState("");
@@ -91,9 +91,11 @@ export default function PageeHeader({
     <div className={classes.tableHeaderWrapper}>
       <div>
         <h4 className={classes.totalItems}>
-          {totalItemsCount && (
-            <>{Number(totalItemsCount).toLocaleString("fa-IR")} {title}</>
-          )}
+          {
+            totalItemsCount
+              ? (Number(totalItemsCount).toLocaleString("fa-IR") + " " + title)
+              : ""
+          }
         </h4>
       </div>
       <div>

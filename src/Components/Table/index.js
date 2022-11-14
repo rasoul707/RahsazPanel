@@ -69,7 +69,7 @@ export default function TableComponent({
   const [offset, setOffset] = useState(0);
   const [prevParams, setPrevParams] = useState(null);
 
-  const hanldePaginationChange = page => {
+  const handlePaginationChange = page => {
     setOffset(page - 1);
   };
 
@@ -94,7 +94,7 @@ export default function TableComponent({
     }
     const data = await api(apiParams);
     let dataWithKey;
-    if (mode == "custom") {
+    if (mode === "custom") {
       dataWithKey = data?.map((item, index) => ({
         ...item,
         key: item?.id || index,
@@ -137,7 +137,7 @@ export default function TableComponent({
     <div className={classes.wrapper}>
       <PageHeader
         title={title} // from table props
-        totalItemsCount={mode == "custom" ? null : totalItemsCount}
+        totalItemsCount={mode === "custom" ? null : totalItemsCount}
         searchValue={searchValue}
         setSearchValue={setSearchValue}
         sort={{ ...sort, setSortValue }}
@@ -145,7 +145,7 @@ export default function TableComponent({
         showRangeFilter={showRangeFilter}
         handleDateRangeChange={handleDateRangeChange}
       />
-      {!!card ? (
+      {card ? (
         <Spin spinning={loading}>
           <Grid container spacing={2} style={{ marginTop: "12px" }}>
             {tableData?.map((item, index) => (
@@ -165,7 +165,7 @@ export default function TableComponent({
           <div className={classes.cardPaginationWrapper}>
             <Pagination
               total={totalItemsCount}
-              onChange={hanldePaginationChange}
+              onChange={handlePaginationChange}
               pageSize={25}
             />
           </div>
@@ -176,9 +176,9 @@ export default function TableComponent({
           columns={localColumns}
           loading={loading}
           pagination={{
-            position: ["none", "bottomCenter"],
-            pageSize: 25,
-            onChange: hanldePaginationChange,
+            position: ["none", "topCenter"],
+            pageSize: 100,
+            onChange: handlePaginationChange,
             total: totalItemsCount,
           }}
         />
