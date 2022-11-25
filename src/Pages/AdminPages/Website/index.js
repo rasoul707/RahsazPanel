@@ -50,6 +50,8 @@ import {
   saveWebsiteAdsApi,
 } from "Services";
 
+
+
 const useStyles = makeStyles(theme => ({
   wrapper: {},
   slideItem: {
@@ -87,12 +89,11 @@ export default function BlogPage() {
   const classes = useStyles();
   const methods = useForm();
 
-  const [status, setStatus] = useState("slider"); // ["slider", "products", "ads"]
+  const [status, setStatus] = useState("footer-menu");
   const [reload, setReload] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [defaultValues, setDefaultValues] = useState(null);
-  console.log("defaultValues: ", defaultValues);
 
   // Slide
   const [showAddSlideModal, setShowAddSlideModal] = useState(false);
@@ -218,6 +219,13 @@ export default function BlogPage() {
       });
   };
 
+
+
+  // footer menu
+  const [selectedMenuGroup, setSelectedMenuGroup] = useState("1");
+
+
+
   // initial page
   const initialPage = async () => {
     setLoading(true);
@@ -243,6 +251,45 @@ export default function BlogPage() {
     // get data for initial page
     initialPage();
   }, [status, reload, selectedGroup]);
+
+
+  let leftButton = <div />
+  if (status === "slider") {
+    leftButton = (
+      <Button
+        disabled={loading}
+        type="submit"
+        onClick={() => setShowAddSlideModal(true)}
+      >
+        <AddIcon />
+        افزودن اسلاید
+      </Button>
+    )
+  }
+  else if (status === "ads") {
+    leftButton = (
+      <Button
+        disabled={loading}
+        type="submit"
+        onClick={methods.handleSubmit(submitBannerForm)}
+      >
+        ذخیره تغییرات
+      </Button>
+    )
+  }
+  else if (status === "footer-menu") {
+    leftButton = (
+      <Button
+        disabled={loading}
+        type="submit"
+      // onClick={methods.handleSubmit(submitBannerForm)}
+      >
+        ذخیره تغییرات
+      </Button>
+    )
+  }
+
+
 
   return (
     <>
@@ -284,6 +331,9 @@ export default function BlogPage() {
           text={`آیا برای حذف کردن این محصول مطمئن هستید؟`}
         />
       )}
+
+
+
       <div className={classes.wrapper}>
         <PageTemplate
           right={<PageTitle>مدیریت وبسایت</PageTitle>}
@@ -291,7 +341,8 @@ export default function BlogPage() {
             <RadioButton
               buttons={[
                 { label: "اسلایدر", value: "slider" },
-                { label: "مجصولات صفحه اصلی", value: "products" },
+                { label: "محصولات صفحه اصلی", value: "products" },
+                { label: "منوهای فوتر", value: "footer-menu" },
                 { label: "بنرهای تبلیغاتی", value: "ads" },
               ]}
               active={status}
@@ -300,28 +351,7 @@ export default function BlogPage() {
               }}
             />
           }
-          left={
-            status === "slider" ? (
-              <Button
-                disabled={loading}
-                type="submit"
-                onClick={() => setShowAddSlideModal(true)}
-              >
-                <AddIcon />
-                افزودن اسلاید
-              </Button>
-            ) : status === "ads" ? (
-              <Button
-                disabled={loading}
-                type="submit"
-                onClick={methods.handleSubmit(submitBannerForm)}
-              >
-                ذخیره تغییرات
-              </Button>
-            ) : (
-              <div />
-            )
-          }
+          left={leftButton}
         >
           <Spin spinning={loading}>
             {/* SLIDER  */}
@@ -452,6 +482,104 @@ export default function BlogPage() {
                     </strong>
                   )}
                 </Grid>
+              </>
+            )}
+
+            {/* FooterMenu  */}
+            {status === "footer-menu" && (
+              <>
+                <div className="d-flex justify-content-center my-4">
+                  <RadioButton
+                    buttons={[
+                      { label: "منوی اول", value: "1" },
+                      { label: "منوی دوم", value: "2" },
+                      { label: "منوی سوم", value: "3" },
+                    ]}
+                    active={selectedMenuGroup}
+                    setActive={value => {
+                      setSelectedMenuGroup(value);
+                    }}
+                  />
+                </div>
+                <FormProvider {...methods}>
+                  <form onSubmit={methods.handleSubmit(submitBannerForm)}>
+                    <Grid container direction="row" spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        {/* <FileInput
+                          label="بنر سمت راست"
+                          setFile={setRightBannerImage}
+                          defaultValue={rightBannerImage}
+                        /> */}
+                        <NormalInput
+                          name="right_fbanner_href"
+                          label="لینک بنر"
+                          placeholder="لینک را وارد کنید"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        {/* <FileInput
+                          label="بنر سمت چپ"
+                          setFile={setLeftBannerImage}
+                          defaultValue={leftBannerImage}
+                        /> */}
+                        <NormalInput
+                          name="left_banner_href"
+                          label="لینک بنر"
+                          placeholder="لینک را وارد کنید"
+                        />
+                      </Grid>
+                    </Grid>
+                    <hr style={{ margin: "12px 0" }} />
+                    <h3 className={classes.subtitle}>بنر ثابت بالاتر از هدر</h3>
+                    <Grid container direction="row" spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <SelectInput
+                          label="وضعیت"
+                          name="above_header_banner_status"
+                          placeholder="وضعیت را انتخاب کنید"
+                          options={[
+                            { label: "فعال", value: "enable" },
+                            { label: "غیر فعال", value: "disable" },
+                          ]}
+                          autoFindValue
+                          defaultValue={
+                            defaultValues?.above_header_banner_status
+                          }
+                        />
+                        <DateInput
+                          name="above_header_banner_started_at"
+                          label="تاریخ شروع"
+                          placeholder="تاریخ شروع را انتخاب کنید"
+                          defaultValue={
+                            defaultValues?.above_header_banner_started_at
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <NormalInput
+                          name="above_header_banner_title"
+                          label="عنوان"
+                          placeholder="عنوان بنر را وارد کنید"
+                        />
+                        <DateInput
+                          name="above_header_banner_expired_at"
+                          label="تاریخ انقضا"
+                          placeholder="تاریخ انقضا را انتخاب کنید"
+                          defaultValue={
+                            defaultValues?.above_header_banner_expired_at
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={12}>
+                        <NormalInput
+                          name="above_header_banner_href"
+                          label="لینک"
+                          placeholder="لینک بنر را وارد کنید"
+                        />
+                      </Grid>
+                    </Grid>
+                  </form>
+                </FormProvider>
               </>
             )}
 
