@@ -180,7 +180,7 @@ export default function CategoryPage() {
         <div>
           <Dropdown
             items={[
-              ...(selectedChildren?.id === 9
+              ...(selectedChildren?.id === 12
                 ? [
                   <button
                     onClick={() =>
