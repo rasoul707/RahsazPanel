@@ -26,7 +26,6 @@ import Report from "Pages/AdminPages/Report";
 import Customer from "Pages/AdminPages/Customer";
 import AddEditCustomer from "Pages/AdminPages/Customer/AddEditCustomer";
 import { AddOrders } from "Pages/AdminPages/Orders/AddOrders";
-import Testdrag from "Pages/AdminPages/testdrag.js";
 
 
 // icons
