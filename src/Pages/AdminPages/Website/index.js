@@ -50,6 +50,7 @@ import {
   saveWebsiteAdsApi,
 } from "Services";
 
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 
 const useStyles = makeStyles(theme => ({
@@ -89,7 +90,7 @@ export default function BlogPage() {
   const classes = useStyles();
   const methods = useForm();
 
-  const [status, setStatus] = useState("footer-menu");
+  const [status, setStatus] = useState("footer-settings");
   const [reload, setReload] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -277,7 +278,7 @@ export default function BlogPage() {
       </Button>
     )
   }
-  else if (status === "footer-menu") {
+  else if (status === "footer-settings") {
     leftButton = (
       <Button
         disabled={loading}
@@ -290,6 +291,67 @@ export default function BlogPage() {
   }
 
 
+
+  // ********************************************
+
+
+
+
+  // fake data generator
+  const getItems = count =>
+    Array.from({ length: count }, (v, k) => k).map(k => ({
+      id: `item-${k}`,
+      content: `item ${k}`,
+    }));
+
+  const [items, setItems] = useState(getItems(6));
+
+  // a little function to help us with reordering the result
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+  };
+  // ********************************************
+
+  const grid = 8;
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: 'none',
+    padding: grid * 2,
+    margin: `0 ${grid}px 0 0`,
+
+    // change background colour if dragging
+    background: isDragging ? 'lightgreen' : 'grey',
+
+    // styles we need to apply on draggables
+    ...draggableStyle,
+  });
+
+  const getListStyle = isDraggingOver => ({
+    background: isDraggingOver ? 'lightblue' : 'lightgrey',
+    display: 'flex',
+    padding: grid,
+    overflow: 'auto',
+  });
+  // ********************************************
+  // const items = getItems(6)
+  const onDragEnd = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const _items = reorder(
+      items,
+      result.source.index,
+      result.destination.index
+    );
+
+    setItems(_items)
+  }
 
   return (
     <>
@@ -320,7 +382,6 @@ export default function BlogPage() {
           text={`آیا برای حذف کردن این محصول مطمئن هستید؟`}
         />
       )}
-
       {showProductDeleteModal && (
         <ConfirmDeleteModal
           title="حذف محصول از دسته"
@@ -342,7 +403,7 @@ export default function BlogPage() {
               buttons={[
                 { label: "اسلایدر", value: "slider" },
                 { label: "محصولات صفحه اصلی", value: "products" },
-                { label: "منوهای فوتر", value: "footer-menu" },
+                { label: "تنظیمات فوتر", value: "footer-settings" },
                 { label: "بنرهای تبلیغاتی", value: "ads" },
               ]}
               active={status}
@@ -486,25 +547,43 @@ export default function BlogPage() {
             )}
 
             {/* FooterMenu  */}
-            {status === "footer-menu" && (
+            {status === "footer-settings" && (
               <>
-                <div className="d-flex justify-content-center my-4">
-                  <RadioButton
-                    buttons={[
-                      { label: "منوی اول", value: "1" },
-                      { label: "منوی دوم", value: "2" },
-                      { label: "منوی سوم", value: "3" },
-                    ]}
-                    active={selectedMenuGroup}
-                    setActive={value => {
-                      setSelectedMenuGroup(value);
-                    }}
-                  />
-                </div>
+
                 <FormProvider {...methods}>
                   <form onSubmit={methods.handleSubmit(submitBannerForm)}>
+                    <DragDropContext onDragEnd={onDragEnd}>
+                      <Droppable droppableId="droppable" direction="horizontal">
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            style={getListStyle(snapshot.isDraggingOver)}
+                            {...provided.droppableProps}
+                          >
+                            {items.map((item, index) => (
+                              <Draggable key={item.id} draggableId={item.id} index={index}>
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    style={getItemStyle(
+                                      snapshot.isDragging,
+                                      provided.draggableProps.style
+                                    )}
+                                  >
+                                    {item.content}
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
                     <Grid container direction="row" spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} md={6} lg={3}>
                         {/* <FileInput
                           label="بنر سمت راست"
                           setFile={setRightBannerImage}
@@ -529,55 +608,7 @@ export default function BlogPage() {
                         />
                       </Grid>
                     </Grid>
-                    <hr style={{ margin: "12px 0" }} />
-                    <h3 className={classes.subtitle}>بنر ثابت بالاتر از هدر</h3>
-                    <Grid container direction="row" spacing={2}>
-                      <Grid item xs={12} sm={6}>
-                        <SelectInput
-                          label="وضعیت"
-                          name="above_header_banner_status"
-                          placeholder="وضعیت را انتخاب کنید"
-                          options={[
-                            { label: "فعال", value: "enable" },
-                            { label: "غیر فعال", value: "disable" },
-                          ]}
-                          autoFindValue
-                          defaultValue={
-                            defaultValues?.above_header_banner_status
-                          }
-                        />
-                        <DateInput
-                          name="above_header_banner_started_at"
-                          label="تاریخ شروع"
-                          placeholder="تاریخ شروع را انتخاب کنید"
-                          defaultValue={
-                            defaultValues?.above_header_banner_started_at
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <NormalInput
-                          name="above_header_banner_title"
-                          label="عنوان"
-                          placeholder="عنوان بنر را وارد کنید"
-                        />
-                        <DateInput
-                          name="above_header_banner_expired_at"
-                          label="تاریخ انقضا"
-                          placeholder="تاریخ انقضا را انتخاب کنید"
-                          defaultValue={
-                            defaultValues?.above_header_banner_expired_at
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={12}>
-                        <NormalInput
-                          name="above_header_banner_href"
-                          label="لینک"
-                          placeholder="لینک بنر را وارد کنید"
-                        />
-                      </Grid>
-                    </Grid>
+
                   </form>
                 </FormProvider>
               </>
