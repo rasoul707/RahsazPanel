@@ -43,3 +43,15 @@ export const getWebsiteAdsApi = () =>
 
 export const saveWebsiteAdsApi = body =>
   api.post(`/website-setting/banners/store`, body).then(res => res.data);
+
+
+
+
+// footer
+export const getFooterSettingApi = () =>
+  api.get(`/website-setting/footer/index`).then(res => res.data);
+
+export const saveFooterSettingApi = body =>
+  api.post(`/website-setting/footer/store`, body).then(res => res.data);
+
+

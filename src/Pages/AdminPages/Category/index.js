@@ -42,7 +42,7 @@ export default function CategoryPage() {
   const classes = useStyles();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("main-category"); // ["main-category", "technical-maps"]
+  const [status, setStatus] = useState("technical-maps"); // ["main-category", "technical-maps"]
   const [reload, setReload] = useState(false);
   // Modals
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -91,7 +91,8 @@ export default function CategoryPage() {
     setLoading(true);
     const data = await initialCategoryPageApi();
     if (!selectedChildren) {
-      setSelectedChildren(data[0]?.children[0]);
+      console.log(data)
+      setSelectedChildren(data[1]?.children[3]);
       setParentColumnName(null);
     }
     setMainCategoriesChildren(data[0]?.children);
@@ -308,6 +309,7 @@ export default function CategoryPage() {
                 }))}
                 active={selectedChildren}
                 setActive={(value, item) => {
+                  console.log(value)
                   setSelectedChildren(value);
                   setParentColumnName(item?.parent);
                 }}

@@ -221,9 +221,25 @@ export default function BlogPage() {
   };
 
 
+  // footer
+  const submitFooterForm = async formData => {
+    setLoading(true);
 
-  // footer menu
-  const [selectedMenuGroup, setSelectedMenuGroup] = useState("1");
+    const body = {
+      right_banner_image: rightBannerImage?.path,
+      left_banner_image: leftBannerImage?.path,
+      ...formData,
+    };
+
+    await saveWebsiteAdsApi(body)
+      .then(() => {
+        setLoading(false);
+        setReload(prev => !prev);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
 
 
 
@@ -317,25 +333,28 @@ export default function BlogPage() {
   // ********************************************
 
   const grid = 8;
+
   const getItemStyle = (isDragging, draggableStyle) => ({
     // some basic styles to make the items look a bit nicer
-    userSelect: 'none',
+    userSelect: "none",
     padding: grid * 2,
-    margin: `0 ${grid}px 0 0`,
+    margin: `0 0 ${grid}px 0`,
 
     // change background colour if dragging
-    background: isDragging ? 'lightgreen' : 'grey',
+    background: isDragging ? "#cececf" : "#F4F4F5",
+    boxShadow: isDragging ? "#00000038 2px 3px 10px 0px" : "none",
+    borderRadius: '10px',
 
     // styles we need to apply on draggables
-    ...draggableStyle,
+    ...draggableStyle
   });
 
   const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? 'lightblue' : 'lightgrey',
-    display: 'flex',
+    // background: isDraggingOver ? "lightblue" : "lightgrey",
     padding: grid,
-    overflow: 'auto',
   });
+
+
   // ********************************************
   // const items = getItems(6)
   const onDragEnd = (result) => {
@@ -549,11 +568,10 @@ export default function BlogPage() {
             {/* FooterMenu  */}
             {status === "footer-settings" && (
               <>
-
                 <FormProvider {...methods}>
-                  <form onSubmit={methods.handleSubmit(submitBannerForm)}>
+                  <form onSubmit={methods.handleSubmit(submitFooterForm)}>
                     <DragDropContext onDragEnd={onDragEnd}>
-                      <Droppable droppableId="droppable" direction="horizontal">
+                      <Droppable droppableId="droppable">
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
@@ -567,48 +585,96 @@ export default function BlogPage() {
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
-                                    style={getItemStyle(
-                                      snapshot.isDragging,
-                                      provided.draggableProps.style
-                                    )}
+                                    style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                                   >
-                                    {item.content}
+                                    <Grid container spacing={2}>
+
+                                      <Grid item xs={12} md={6}>
+
+                                        {/* title */}
+                                        <Grid container spacing={2}>
+                                          <Grid item xs={12}>
+                                            <NormalInput
+                                              name="left_banner_hreft"
+                                              label="عنوان"
+                                              placeholder="عنوان را وارد کنید"
+                                            />
+                                          </Grid>
+                                        </Grid>
+
+                                        {/* size */}
+                                        <Grid container spacing={2}>
+                                          <Grid item xs={3}>
+                                            <NormalInput
+                                              name="left_banner_href"
+                                              label="xs"
+                                            />
+                                          </Grid>
+                                          <Grid item xs={3}>
+                                            <NormalInput
+                                              name="left_banner_href"
+                                              label="sm"
+                                            />
+                                          </Grid>
+                                          <Grid item xs={3}>
+                                            <NormalInput
+                                              name="left_banner_href"
+                                              label="md"
+                                            />
+                                          </Grid>
+                                          <Grid item xs={3}>
+                                            <NormalInput
+                                              name="left_banner_href"
+                                              label="lg"
+                                            />
+                                          </Grid>
+                                        </Grid>
+
+
+                                      </Grid>
+
+                                      <Grid item xs={12} md={6}>
+
+                                        <Grid container spacing={2} >
+                                          <Grid item xs={12} md={6}>
+                                            <NormalInput
+                                              name="left_banner_href"
+                                              label="عنوان"
+                                            />
+                                          </Grid>
+                                          <Grid item xs={12} md={6}>
+                                            <NormalInput
+                                              name="left_banner_href"
+                                              label="لینک"
+                                            />
+                                          </Grid>
+                                        </Grid>
+
+                                        <Grid container spacing={2}>
+                                          <Grid item xs={12} md={6}>
+                                            <NormalInput
+                                              name="left_banner_href"
+                                              label="عنوان"
+                                            />
+                                          </Grid>
+                                          <Grid item xs={12} md={6}>
+                                            <NormalInput
+                                              name="left_banner_href"
+                                              label="لینک"
+                                            />
+                                          </Grid>
+                                        </Grid>
+
+                                      </Grid>
+                                    </Grid>
                                   </div>
                                 )}
                               </Draggable>
                             ))}
-                            {provided.placeholder}
                           </div>
                         )}
                       </Droppable>
                     </DragDropContext>
-                    <Grid container direction="row" spacing={2}>
-                      <Grid item xs={12} md={6} lg={3}>
-                        {/* <FileInput
-                          label="بنر سمت راست"
-                          setFile={setRightBannerImage}
-                          defaultValue={rightBannerImage}
-                        /> */}
-                        <NormalInput
-                          name="right_fbanner_href"
-                          label="لینک بنر"
-                          placeholder="لینک را وارد کنید"
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        {/* <FileInput
-                          label="بنر سمت چپ"
-                          setFile={setLeftBannerImage}
-                          defaultValue={leftBannerImage}
-                        /> */}
-                        <NormalInput
-                          name="left_banner_href"
-                          label="لینک بنر"
-                          placeholder="لینک را وارد کنید"
-                        />
-                      </Grid>
-                    </Grid>
-
                   </form>
                 </FormProvider>
               </>
