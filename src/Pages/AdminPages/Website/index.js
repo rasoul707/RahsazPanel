@@ -685,7 +685,11 @@ export default function BlogPage() {
                                                 label="عنوان"
                                                 placeholder="عنوان را وارد کنید"
                                                 withoutControl
-                                              // disabled
+                                                // disabled
+                                                onChange={() => {
+                                                  setShowItemsFooterMenuModal(true)
+                                                  setFooterMenuIDModal(item.id)
+                                                }}
                                               />
                                             </Grid>
                                             <Grid item xs={3} md={2}>
@@ -693,6 +697,10 @@ export default function BlogPage() {
                                                 value={item.xs}
                                                 label="xs"
                                                 withoutControl
+                                                onChange={() => {
+                                                  setShowItemsFooterMenuModal(true)
+                                                  setFooterMenuIDModal(item.id)
+                                                }}
                                               />
                                             </Grid>
                                             <Grid item xs={3} md={2}>
@@ -700,6 +708,10 @@ export default function BlogPage() {
                                                 value={item.sm}
                                                 label="sm"
                                                 withoutControl
+                                                onChange={() => {
+                                                  setShowItemsFooterMenuModal(true)
+                                                  setFooterMenuIDModal(item.id)
+                                                }}
                                               />
                                             </Grid>
                                             <Grid item xs={3} md={2}>
@@ -707,6 +719,10 @@ export default function BlogPage() {
                                                 value={item.md}
                                                 label="md"
                                                 withoutControl
+                                                onChange={() => {
+                                                  setShowItemsFooterMenuModal(true)
+                                                  setFooterMenuIDModal(item.id)
+                                                }}
                                               />
                                             </Grid>
                                             <Grid item xs={3} md={2}>
@@ -714,6 +730,10 @@ export default function BlogPage() {
                                                 value={item.lg}
                                                 label="lg"
                                                 withoutControl
+                                                onChange={() => {
+                                                  setShowItemsFooterMenuModal(true)
+                                                  setFooterMenuIDModal(item.id)
+                                                }}
                                               />
                                             </Grid>
                                             <Grid item xs="auto">

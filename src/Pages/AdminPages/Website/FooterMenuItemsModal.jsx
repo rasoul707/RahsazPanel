@@ -61,7 +61,7 @@ export default function FooterMenuItemsModal({
     await updateFooterSettingApi(body.id, body)
       .then(() => {
         setLoading(false);
-        // setReload(prev => !prev);
+        setReload(prev => !prev);
         onCancel();
       })
       .catch(() => {
