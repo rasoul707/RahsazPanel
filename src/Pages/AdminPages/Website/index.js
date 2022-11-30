@@ -8,6 +8,8 @@ import { toast } from "Utils/toast";
 import PageTemplate from "Components/PageTemplate";
 import PageTitle from "Components/PageTemplate/PageTitle";
 import AddEditSlideModal from "Pages/AdminPages/Website/AddEditSlideModal";
+import AddFooterMenuModal from "Pages/AdminPages/Website/AddFooterMenuModal";
+import FooterMenuItemsModal from "Pages/AdminPages/Website/FooterMenuItemsModal";
 import { Button, RadioButton } from "Components/Button";
 import { ConfirmDeleteModal } from "Components/Modal";
 import FileCard from "Components/Card/FileCard";
@@ -29,7 +31,7 @@ import {
 import { ReactComponent as AddIcon } from "Assets/img/icons/add.svg";
 import { ReactComponent as EditIcon } from "Assets/img/icons/edit.svg";
 import { ReactComponent as ReplaceIcon } from "Assets/img/icons/replace.svg";
-
+import { ReactComponent as CategoryIcon } from "Assets/img/icons/sidebar-category.svg";
 // Services
 import {
   getTaxSettingApi,
@@ -46,10 +48,16 @@ import {
   addProductToGroupApi,
   getWebsiteGroupsApi,
   removeProductFromGroupApi,
+  // 
   getWebsiteAdsApi,
   saveWebsiteAdsApi,
-} from "Services";
+  // footer
+  getFooterSettingApi,
+  updateAllFooterSettingApi,
+  deleteFooterSettingApi,
 
+} from "Services";
+import { ReactComponent as DeleteIcon } from "Assets/img/icons/delete-red.svg";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 
@@ -84,6 +92,28 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 700,
     marginBottom: 20,
   },
+  ltr_input: {
+    direction: "rtl",
+  },
+  addItemButton: {
+    // background: "green",
+    width: "100%"
+  },
+  iconButton: {
+    background: "#FFFFFF",
+    borderRadius: 8,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 36,
+    width: 36,
+    cursor: "pointer",
+  }
+
+
+
+
+
 }));
 
 export default function BlogPage() {
@@ -121,6 +151,8 @@ export default function BlogPage() {
   // Products
   const [selectedGroup, setSelectedGroup] = useState("1");
   const [showProductDeleteModal, setShowProductDeleteModal] = useState(false);
+  const [showItemsFooterMenuModal, setShowItemsFooterMenuModal] = useState(false);
+
 
   const handleGroupStatusChange = async selectedValue => {
     setLoading(true);
@@ -221,26 +253,6 @@ export default function BlogPage() {
   };
 
 
-  // footer
-  const submitFooterForm = async formData => {
-    setLoading(true);
-
-    const body = {
-      right_banner_image: rightBannerImage?.path,
-      left_banner_image: leftBannerImage?.path,
-      ...formData,
-    };
-
-    await saveWebsiteAdsApi(body)
-      .then(() => {
-        setLoading(false);
-        setReload(prev => !prev);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  };
-
 
 
   // initial page
@@ -250,11 +262,23 @@ export default function BlogPage() {
     const getApi =
       status === "slider"
         ? getWebsiteSlidersApi
-        : status === "products"
-          ? getWebsiteGroupsApi
-          : getWebsiteAdsApi;
+        : status === "products" ? getWebsiteGroupsApi
+          : status === "footer-settings" ? getFooterSettingApi
+            : getWebsiteAdsApi;
+
     const data = await getApi(status === "products" && selectedGroup);
     setDefaultValues(data);
+    if (status === "footer-settings") {
+      setFooterMenu(data?.map(v => {
+        return {
+          ...v,
+          id: v.id.toString(),
+          // items: v?.items.map((vd, ii) => {
+          //   return { ...vd, id: vd.id.toString() }
+          // })
+        }
+      }))
+    }
     setRightBannerImage(data?.right_banner_image);
     setLeftBannerImage(data?.left_banner_image);
     methods.reset(data);
@@ -268,6 +292,102 @@ export default function BlogPage() {
     // get data for initial page
     initialPage();
   }, [status, reload, selectedGroup]);
+
+
+
+
+
+
+
+
+
+  // footer ****************************************************
+  const [footerMenu, setFooterMenu] = useState([])
+  const [showAddFooterMenuModal, setShowAddFooterMenuModal] = useState(false)
+  const [footerMenuIDModal, setFooterMenuIDModal] = useState(null)
+
+
+  const deleteFooterSetting = async (id) => {
+    setLoading(true);
+    await deleteFooterSettingApi(id)
+      .then(() => {
+        setLoading(false);
+        setReload(prev => !prev);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+
+
+  const submitFooterForm = async formData => {
+    setLoading(true);
+    const body = {
+      footerMenu: footerMenu.map((v, i) => ({
+        ...v,
+        id: parseInt(v.id)
+      }))
+    };
+    await updateAllFooterSettingApi(body)
+      .then(() => {
+        setLoading(false);
+        setReload(prev => !prev);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  };
+
+  // a little function to help us with reordering the result
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+  };
+
+
+
+  const getMainBoxItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: "none",
+    padding: "16px",
+    margin: `0 0 8px 0`,
+    // position: "relative",
+    // paddingBottom: "px",
+    // change background colour if dragging
+    background: isDragging ? "#cececf" : "#F4F4F5",
+    boxShadow: isDragging ? "#00000038 2px 3px 10px 0px" : "none",
+    borderRadius: '10px',
+    // styles we need to apply on draggables
+    ...draggableStyle
+  });
+
+  const getMainListStyle = isDraggingOver => ({});
+
+  const onDragEndMain = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const initial = result.source.index
+    const final = result.destination.index
+
+
+    const _items = reorder(footerMenu, initial, final);
+    const data = _items.map((v, i) => ({ ...v, priority: i + 1 }))
+    setFooterMenu([...data]);
+  }
+
+
+
+  // ********************************************
+
+
+
+
 
 
   let leftButton = <div />
@@ -296,81 +416,30 @@ export default function BlogPage() {
   }
   else if (status === "footer-settings") {
     leftButton = (
-      <Button
-        disabled={loading}
-        type="submit"
-      // onClick={methods.handleSubmit(submitBannerForm)}
-      >
-        ذخیره تغییرات
-      </Button>
+      <div className="d-flex align-center" style={{ gap: "12px" }}>
+        <Button
+          disabled={loading}
+          onClick={() => setShowAddFooterMenuModal(true)}
+        >
+          <AddIcon /> افزودن
+        </Button>
+        <Button
+          disabled={loading}
+          onClick={submitFooterForm}
+        >
+          ذخیره
+        </Button>
+      </div>
     )
   }
 
 
 
-  // ********************************************
 
 
 
 
-  // fake data generator
-  const getItems = count =>
-    Array.from({ length: count }, (v, k) => k).map(k => ({
-      id: `item-${k}`,
-      content: `item ${k}`,
-    }));
 
-  const [items, setItems] = useState(getItems(6));
-
-  // a little function to help us with reordering the result
-  const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-  };
-  // ********************************************
-
-  const grid = 8;
-
-  const getItemStyle = (isDragging, draggableStyle) => ({
-    // some basic styles to make the items look a bit nicer
-    userSelect: "none",
-    padding: grid * 2,
-    margin: `0 0 ${grid}px 0`,
-
-    // change background colour if dragging
-    background: isDragging ? "#cececf" : "#F4F4F5",
-    boxShadow: isDragging ? "#00000038 2px 3px 10px 0px" : "none",
-    borderRadius: '10px',
-
-    // styles we need to apply on draggables
-    ...draggableStyle
-  });
-
-  const getListStyle = isDraggingOver => ({
-    // background: isDraggingOver ? "lightblue" : "lightgrey",
-    padding: grid,
-  });
-
-
-  // ********************************************
-  // const items = getItems(6)
-  const onDragEnd = (result) => {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-
-    const _items = reorder(
-      items,
-      result.source.index,
-      result.destination.index
-    );
-
-    setItems(_items)
-  }
 
   return (
     <>
@@ -411,7 +480,23 @@ export default function BlogPage() {
           text={`آیا برای حذف کردن این محصول مطمئن هستید؟`}
         />
       )}
-
+      {showAddFooterMenuModal && (
+        <AddFooterMenuModal
+          title="افزودن منوی فوتر"
+          visible={showAddFooterMenuModal}
+          onCancel={() => setShowAddFooterMenuModal(false)}
+          setReload={setReload}
+        />
+      )}
+      {showItemsFooterMenuModal && (
+        <FooterMenuItemsModal
+          title="آیتم های منو"
+          visible={showItemsFooterMenuModal}
+          onCancel={() => setShowItemsFooterMenuModal(false)}
+          setReload={setReload}
+          menuID={footerMenuIDModal}
+        />
+      )}
 
 
       <div className={classes.wrapper}>
@@ -568,116 +653,116 @@ export default function BlogPage() {
             {/* FooterMenu  */}
             {status === "footer-settings" && (
               <>
-                <FormProvider {...methods}>
-                  <form onSubmit={methods.handleSubmit(submitFooterForm)}>
-                    <DragDropContext onDragEnd={onDragEnd}>
+
+
+                {footerMenu?.length ?
+                  (
+
+                    <DragDropContext onDragEnd={onDragEndMain}>
                       <Droppable droppableId="droppable">
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
-                            style={getListStyle(snapshot.isDraggingOver)}
+                            style={getMainListStyle(snapshot.isDraggingOver)}
                             {...provided.droppableProps}
                           >
-                            {items.map((item, index) => (
-                              <Draggable key={item.id} draggableId={item.id} index={index}>
-                                {(provided, snapshot) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-                                  >
-                                    <Grid container spacing={2}>
-
-                                      <Grid item xs={12} md={6}>
-
-                                        {/* title */}
-                                        <Grid container spacing={2}>
-                                          <Grid item xs={12}>
-                                            <NormalInput
-                                              name="left_banner_hreft"
-                                              label="عنوان"
-                                              placeholder="عنوان را وارد کنید"
-                                            />
+                            <Grid container spacing={2}>
+                              {footerMenu?.map((item, index) => {
+                                return (
+                                  <Grid item xs={12} md={6}>
+                                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                                      {(provided, snapshot) => (
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          style={getMainBoxItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                                        >
+                                          <Grid container spacing={2}>
+                                            <Grid item xs={12} md={4}>
+                                              <NormalInput
+                                                value={item.title}
+                                                label="عنوان"
+                                                placeholder="عنوان را وارد کنید"
+                                                withoutControl
+                                              // disabled
+                                              />
+                                            </Grid>
+                                            <Grid item xs={3} md={2}>
+                                              <NormalInput
+                                                value={item.xs}
+                                                label="xs"
+                                                withoutControl
+                                              />
+                                            </Grid>
+                                            <Grid item xs={3} md={2}>
+                                              <NormalInput
+                                                value={item.sm}
+                                                label="sm"
+                                                withoutControl
+                                              />
+                                            </Grid>
+                                            <Grid item xs={3} md={2}>
+                                              <NormalInput
+                                                value={item.md}
+                                                label="md"
+                                                withoutControl
+                                              />
+                                            </Grid>
+                                            <Grid item xs={3} md={2}>
+                                              <NormalInput
+                                                value={item.lg}
+                                                label="lg"
+                                                withoutControl
+                                              />
+                                            </Grid>
+                                            <Grid item xs="auto">
+                                              <button
+                                                type="button"
+                                                onClick={() => {
+                                                  setShowItemsFooterMenuModal(true)
+                                                  setFooterMenuIDModal(item.id)
+                                                }}
+                                                className={classes.iconButton}
+                                              >
+                                                <CategoryIcon />
+                                              </button>
+                                            </Grid>
+                                            <Grid item xs="auto">
+                                              <button
+                                                type="button"
+                                                onClick={() => deleteFooterSetting(item.id)}
+                                                className={classes.iconButton}
+                                              >
+                                                <DeleteIcon />
+                                              </button>
+                                            </Grid>
                                           </Grid>
-                                        </Grid>
 
-                                        {/* size */}
-                                        <Grid container spacing={2}>
-                                          <Grid item xs={3}>
-                                            <NormalInput
-                                              name="left_banner_href"
-                                              label="xs"
-                                            />
-                                          </Grid>
-                                          <Grid item xs={3}>
-                                            <NormalInput
-                                              name="left_banner_href"
-                                              label="sm"
-                                            />
-                                          </Grid>
-                                          <Grid item xs={3}>
-                                            <NormalInput
-                                              name="left_banner_href"
-                                              label="md"
-                                            />
-                                          </Grid>
-                                          <Grid item xs={3}>
-                                            <NormalInput
-                                              name="left_banner_href"
-                                              label="lg"
-                                            />
-                                          </Grid>
-                                        </Grid>
-
-
-                                      </Grid>
-
-                                      <Grid item xs={12} md={6}>
-
-                                        <Grid container spacing={2} >
-                                          <Grid item xs={12} md={6}>
-                                            <NormalInput
-                                              name="left_banner_href"
-                                              label="عنوان"
-                                            />
-                                          </Grid>
-                                          <Grid item xs={12} md={6}>
-                                            <NormalInput
-                                              name="left_banner_href"
-                                              label="لینک"
-                                            />
-                                          </Grid>
-                                        </Grid>
-
-                                        <Grid container spacing={2}>
-                                          <Grid item xs={12} md={6}>
-                                            <NormalInput
-                                              name="left_banner_href"
-                                              label="عنوان"
-                                            />
-                                          </Grid>
-                                          <Grid item xs={12} md={6}>
-                                            <NormalInput
-                                              name="left_banner_href"
-                                              label="لینک"
-                                            />
-                                          </Grid>
-                                        </Grid>
-
-                                      </Grid>
-                                    </Grid>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
+                                        </div>
+                                      )}
+                                    </Draggable>
+                                  </Grid>
+                                );
+                              }
+                              )}
+                            </Grid>
                           </div>
                         )}
                       </Droppable>
                     </DragDropContext>
-                  </form>
-                </FormProvider>
+
+                  )
+                  :
+                  (
+                    <strong className="no-data-msg">
+                      اطلاعاتی برای نمایش وجود ندارد
+                    </strong>
+                  )
+                }
+
               </>
+
             )}
 
             {/* ADS  */}
@@ -766,7 +851,7 @@ export default function BlogPage() {
             )}
           </Spin>
         </PageTemplate>
-      </div>
+      </div >
     </>
   );
 }

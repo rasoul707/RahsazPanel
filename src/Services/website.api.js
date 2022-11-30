@@ -51,7 +51,23 @@ export const saveWebsiteAdsApi = body =>
 export const getFooterSettingApi = () =>
   api.get(`/website-setting/footer/index`).then(res => res.data);
 
-export const saveFooterSettingApi = body =>
+export const getFooterSettingByIDApi = (id) =>
+  api.get(`/website-setting/footer/show/${id}`).then(res => res.data);
+
+export const createFooterSettingApi = body =>
   api.post(`/website-setting/footer/store`, body).then(res => res.data);
 
+export const createFooterSettingItemApi = body =>
+  api.post(`/website-setting/footer/store/item`, body).then(res => res.data);
 
+export const deleteFooterSettingApi = id =>
+  api.delete(`/website-setting/footer/destroy/${id}`).then(res => res.data);
+
+export const deleteFooterSettingItemApi = id =>
+  api.delete(`/website-setting/footer/destroy/item/${id}`).then(res => res.data);
+
+export const updateFooterSettingApi = (id, body) =>
+  api.post(`/website-setting/footer/update/${id}`, body).then(res => res.data);
+
+export const updateAllFooterSettingApi = (body) =>
+  api.post(`/website-setting/footer/update/`, body).then(res => res.data);
