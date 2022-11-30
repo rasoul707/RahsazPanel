@@ -9,8 +9,7 @@ import PageHeader from "Components/PageTemplate/PageHeader";
 
 
 
-// Services
-import { } from "Services";
+
 
 const useStyles = makeStyles(theme => ({
   cardPaginationWrapper: {
@@ -67,10 +66,12 @@ export default function TableComponent({
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [offset, setOffset] = useState(0);
+  const [pageSize, setPageSize] = useState(25);
   const [prevParams, setPrevParams] = useState(null);
 
-  const handlePaginationChange = page => {
+  const handlePaginationChange = (page, page_size) => {
     setOffset(page - 1);
+    setPageSize(page_size)
   };
 
   const getTableData = async () => {
@@ -79,6 +80,7 @@ export default function TableComponent({
       offset,
       search: searchValue,
       order_by: "created_at",
+      page_size: pageSize,
       order_type: customParamsSort ? null : sortValue,
       ...params,
       // date range
@@ -111,6 +113,7 @@ export default function TableComponent({
     // if need table data on parent component
     if (setTableDataForParent) setTableDataForParent(dataWithKey);
     setTotalItemsCount(data?.total_count);
+
     setLoading(false);
   };
 
@@ -118,7 +121,7 @@ export default function TableComponent({
     // get table data
     getTableData();
     setFirstTry(false);
-  }, [offset, searchValue, sortValue, startDate, endDate, reload]);
+  }, [offset, pageSize, searchValue, sortValue, startDate, endDate, reload]);
 
   // params is separate from other values beacuse
   // when any state has been changed in parent component table reload
@@ -166,7 +169,7 @@ export default function TableComponent({
             <Pagination
               total={totalItemsCount}
               onChange={handlePaginationChange}
-              pageSize={25}
+              pageSize={pageSize}
             />
           </div>
         </Spin>
@@ -176,8 +179,8 @@ export default function TableComponent({
           columns={localColumns}
           loading={loading}
           pagination={{
-            position: ["none", "topCenter"],
-            pageSize: 100,
+            position: ["none", "bottomCenter"],
+            pageSize: pageSize,
             onChange: handlePaginationChange,
             total: totalItemsCount,
           }}
