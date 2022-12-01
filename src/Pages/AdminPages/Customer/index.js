@@ -42,6 +42,8 @@ export default function CategoryPage() {
     useState(false);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
+
   const deleteCustomer = () => {
     setDeleteLoading(true);
     deleteCustomerApi(showDeleteModal)
@@ -49,6 +51,7 @@ export default function CategoryPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -144,9 +147,16 @@ export default function CategoryPage() {
         title={`حذف کاربر`}
         visible={!!showDeleteModal}
         onConfirm={deleteCustomer}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`"آیا برای حذف این کاربر مطمئن هستید؟"`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از کاربرات اطمینان دارید؟`
+            : `آیا برای حذف کردن این کاربر مطمئن هستید؟`
+        }
       />
 
       {showMessageHistoryModal && (
@@ -206,6 +216,10 @@ export default function CategoryPage() {
                 { label: "برنزی", value: "برنزی" },
               ],
             }}
+            onGroupDelete={(rowSelection) => {
+              setShowDeleteModal(rowSelection.selectedRowKeys)
+            }}
+            unselectAll={unselectAll}
           />
         </PageTemplate>
       </div>
