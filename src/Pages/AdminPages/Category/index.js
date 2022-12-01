@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Spin } from "antd";
 import { NAString } from "Utils/helperFunction";
@@ -183,15 +183,9 @@ export default function CategoryPage() {
             items={[
               ...(selectedChildren?.id === 12
                 ? [
-                  <button
-                    onClick={() =>
-                      navigate(
-                        `/admin/category/edit-technical-map/${record.id}`,
-                      )
-                    }
-                  >
+                  <Link target="_blank" to={`/admin/category/edit-technical-map/${record.id}`}>
                     <EditIcon /> <span>مشاهده کالاهای دسته</span>
-                  </button>,
+                  </Link>,
                 ]
                 : []),
               <button onClick={() => setShowEditModal(record)}>
