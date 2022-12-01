@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -8,10 +8,8 @@ import { SelectInput, DateRangePicker } from "Components/Inputs";
 // Assets
 import { ReactComponent as SearchIcon } from "Assets/img/icons/search-input.svg";
 import { ReactComponent as CloseIcon } from "Assets/img/icons/close.svg";
-import LoginBg from "Assets/img/login-bg.png";
 
-// Services
-import { } from "Services";
+
 
 const useStyles = makeStyles(theme => ({
   tableHeaderWrapper: {
@@ -60,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function PageeHeader({
+export default function PageHeader({
   title,
   totalItemsCount,
   searchValue,

@@ -42,7 +42,7 @@ export default function CategoryPage() {
   const classes = useStyles();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("technical-maps"); // ["main-category", "technical-maps"]
+  const [status, setStatus] = useState("main-category"); // ["main-category", "technical-maps"]
   const [reload, setReload] = useState(false);
   // Modals
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -92,7 +92,7 @@ export default function CategoryPage() {
     const data = await initialCategoryPageApi();
     if (!selectedChildren) {
       console.log(data)
-      setSelectedChildren(data[1]?.children[3]);
+      setSelectedChildren(data[0]?.children[0]);
       setParentColumnName(null);
     }
     setMainCategoriesChildren(data[0]?.children);
@@ -116,6 +116,7 @@ export default function CategoryPage() {
     }
   }, [status]);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
   const deleteCategory = () => {
     setDeleteLoading(true);
     removeChildrenApi(showDeleteModal)
@@ -123,6 +124,7 @@ export default function CategoryPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -215,9 +217,16 @@ export default function CategoryPage() {
         title={`حذف ${selectedChildren?.name}`}
         visible={!!showDeleteModal}
         onConfirm={deleteCategory}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`"آیا برای حذف کردن این ${selectedChildren?.name} مطمئن هستید؟"`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از ${selectedChildren?.name} ها اطمینان دارید؟`
+            : `آیا برای حذف کردن این ${selectedChildren?.name} مطمئن هستید؟`
+        }
       />
       {showRenameModal && (
         <RenameChildrenModal
@@ -293,7 +302,11 @@ export default function CategoryPage() {
             </div>
           }
         >
+
+
+
           <Spin spinning={loading}>
+
             <div className="d-flex justify-content-center mb-4">
               <RadioButton
                 buttons={CHILDREN?.map(item => ({
@@ -316,6 +329,10 @@ export default function CategoryPage() {
                 api={getCategoryItemsApi}
                 params={{ id: selectedChildren?.id }}
                 reload={reload}
+                onGroupDelete={(rowSelection) => {
+                  setShowDeleteModal(rowSelection.selectedRowKeys)
+                }}
+                unselectAll={unselectAll}
               />
             )}
           </Spin>

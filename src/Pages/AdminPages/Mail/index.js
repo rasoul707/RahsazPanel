@@ -35,6 +35,8 @@ export default function BlogPage() {
   const [showMessageModal, setShowMessageModal] = useState(false);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
+
   const deleteMail = () => {
     setDeleteLoading(true);
     removeMailApi(showDeleteModal)
@@ -42,6 +44,7 @@ export default function BlogPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -127,9 +130,16 @@ export default function BlogPage() {
         title="حذف پیام"
         visible={showDeleteModal}
         onConfirm={deleteMail}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`آیا برای حذف کردن این پیام مطمئن هستید؟`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از پیام ها اطمینان دارید؟`
+            : `آیا برای حذف کردن این پیام مطمئن هستید؟`
+        }
       />
 
       {showSMSModal && (

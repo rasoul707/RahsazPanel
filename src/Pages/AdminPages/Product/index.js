@@ -29,10 +29,10 @@ export default function BlogPage() {
 
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [parentData, setParentData] = useState([]);
-  console.log("parentData", parentData);
+  const [parentData, setParentData] = useState([])
 
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
   const deleteProduct = () => {
     setDeleteLoading(true);
     removeProductApi(showDeleteModal)
@@ -40,6 +40,7 @@ export default function BlogPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -162,9 +163,16 @@ export default function BlogPage() {
         title="حذف محصول"
         visible={showDeleteModal}
         onConfirm={deleteProduct}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`آیا برای حذف کردن این محصول مطمئن هستید؟`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از محصولات اطمینان دارید؟`
+            : `آیا برای حذف کردن این محصول مطمئن هستید؟`
+        }
       />
 
       <div className={classes.wrapper}>
@@ -183,6 +191,10 @@ export default function BlogPage() {
             api={getProductsApi}
             reload={reload}
             setTableDataForParent={setParentData}
+            onGroupDelete={(rowSelection) => {
+              setShowDeleteModal(rowSelection.selectedRowKeys)
+            }}
+            unselectAll={unselectAll}
           />
         </PageTemplate>
       </div>

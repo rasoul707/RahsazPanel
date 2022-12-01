@@ -26,6 +26,7 @@ export default function CarrencySetting({ reload, setReload }) {
   const [showEditCurrencyModal, setShowEditCurrencyModal] = useState(false);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
   const deleteProduct = () => {
     setDeleteLoading(true);
     removeCurrencyApi(showDeleteModal)
@@ -33,6 +34,7 @@ export default function CarrencySetting({ reload, setReload }) {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -118,9 +120,16 @@ export default function CarrencySetting({ reload, setReload }) {
         title="حذف ارز"
         visible={showDeleteModal}
         onConfirm={deleteProduct}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`آیا برای حذف کردن این ارز مطمئن هستید؟`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از ارزها اطمینان دارید؟`
+            : `آیا برای حذف کردن این ارز مطمئن هستید؟`
+        }
       />
       {showEditCurrencyModal && (
         <AddEditCurrencyModal
@@ -136,6 +145,10 @@ export default function CarrencySetting({ reload, setReload }) {
           columns={columns}
           api={getCurrenciesApi}
           reload={reload}
+          onGroupDelete={(rowSelection) => {
+            setShowDeleteModal(rowSelection.selectedRowKeys)
+          }}
+          unselectAll={unselectAll}
         />
       </div>
     </>

@@ -44,6 +44,7 @@ export default function BlogPage() {
   };
 
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
   const deleteComment = () => {
     setDeleteLoading(true);
     removeCommentApi(showDeleteModal)
@@ -51,6 +52,7 @@ export default function BlogPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -149,10 +151,16 @@ export default function BlogPage() {
         title={status === "comment" ? "حذف دیدگاه" : "حذف پرسش"}
         visible={!!showDeleteModal}
         onConfirm={deleteComment}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`آیا برای حذف کردن این ${status === "comment" ? "دیدگاه" : "پرسش"
-          } مطمئن هستید؟`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از دیدگاه ها اطمینان دارید؟`
+            : `آیا برای حذف کردن این دیدگاه مطمئن هستید؟`
+        }
       />
 
       {showAnswerModal && (
@@ -193,6 +201,10 @@ export default function BlogPage() {
             api={getCommentsApi}
             params={{ type: status }}
             reload={reload}
+            onGroupDelete={(rowSelection) => {
+              setShowDeleteModal(rowSelection.selectedRowKeys)
+            }}
+            unselectAll={unselectAll}
           />
         </PageTemplate>
       </div>

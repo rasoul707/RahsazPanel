@@ -6,6 +6,8 @@ import { componentPropsValidator } from "Utils/helperFunction";
 
 // Components
 import PageHeader from "Components/PageTemplate/PageHeader";
+import { Button, } from "Components/Button";
+
 
 
 
@@ -33,6 +35,9 @@ export default function TableComponent({
   mode,
   customParamsSort,
   setTableDataForParent, // set table data for parent component
+  onGroupDelete,
+  unselectAll,
+  enableSelection = true,
 }) {
   const classes = useStyles();
   // handle header params
@@ -74,8 +79,25 @@ export default function TableComponent({
     setPageSize(page_size)
   };
 
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (newSelectedRowKeys) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+    },
+  }
+  const selectedCount = selectedRowKeys.length
+  const hasSelected = selectedCount > 0;
+  useEffect(() => {
+    setSelectedRowKeys([])
+    // 
+  }, [unselectAll]);
+
+
   const getTableData = async () => {
     setLoading(true);
+    setSelectedRowKeys([])
     const apiParams = {
       offset,
       search: searchValue,
@@ -117,6 +139,8 @@ export default function TableComponent({
     setLoading(false);
   };
 
+
+
   useEffect(() => {
     // get table data
     getTableData();
@@ -147,7 +171,16 @@ export default function TableComponent({
         showSearch={showSearch}
         showRangeFilter={showRangeFilter}
         handleDateRangeChange={handleDateRangeChange}
+        right={hasSelected && <>
+          <Button
+            onClick={() => onGroupDelete(rowSelection)}
+            children={`حذف ${selectedCount} مورد`}
+            style={{ marginLeft: 5 }}
+            size='small'
+          />
+        </>}
       />
+
       {card ? (
         <Spin spinning={loading}>
           <Grid container spacing={2} style={{ marginTop: "12px" }}>
@@ -184,6 +217,7 @@ export default function TableComponent({
             onChange: handlePaginationChange,
             total: totalItemsCount,
           }}
+          rowSelection={enableSelection && rowSelection}
         />
       )}
     </div>

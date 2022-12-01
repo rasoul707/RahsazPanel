@@ -34,6 +34,7 @@ export default function BlogPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
   const deleteMember = () => {
     setDeleteLoading(true);
     removeMemberApi(showDeleteModal)
@@ -41,6 +42,7 @@ export default function BlogPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -110,9 +112,16 @@ export default function BlogPage() {
         title="حذف عضو"
         visible={!!showDeleteModal}
         onConfirm={deleteMember}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`آیا برای حذف کردن این عضو مطمئن هستید؟`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از عضوها اطمینان دارید؟`
+            : `آیا برای حذف کردن این عضو مطمئن هستید؟`
+        }
       />
 
       <div className={classes.wrapper}>
@@ -143,6 +152,10 @@ export default function BlogPage() {
             api={getMyTeamApi}
             params={{ type: status }}
             reload={reload}
+            onGroupDelete={(rowSelection) => {
+              setShowDeleteModal(rowSelection.selectedRowKeys)
+            }}
+            unselectAll={unselectAll}
           />
         </PageTemplate>
       </div>

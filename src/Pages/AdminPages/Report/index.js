@@ -55,14 +55,10 @@ export default function BlogPage() {
           {status === "orders" && <OrdersReport setCsvData={setCsvData} />}
 
           {/* CUSTOMERS  */}
-          {status === "customers" && (
-            <CustomersReport setCsvData={setCsvData} />
-          )}
+          {status === "customers" && (<CustomersReport setCsvData={setCsvData} />)}
 
           {/* STORE ROOM  */}
-          {status === "store-room" && (
-            <StoreRoomReport setCsvData={setCsvData} />
-          )}
+          {status === "store-room" && (<StoreRoomReport setCsvData={setCsvData} />)}
         </PageTemplate>
       </div>
     </>

@@ -88,6 +88,7 @@ export default function CustomersReport({ setCsvData }) {
           showSearch={false}
           showRangeFilter={true}
           setTableDataForParent={setCsvData}
+          enableSelection={false}
         />
       </div>
     </>

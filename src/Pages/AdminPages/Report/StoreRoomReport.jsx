@@ -107,6 +107,7 @@ export default function StoreRoomReport({ setCsvData }) {
           showSearch={false}
           showRangeFilter={true}
           setTableDataForParent={setCsvData}
+          enableSelection={false}
         />
       </div>
     </>

@@ -37,9 +37,10 @@ export default function OrderPage() {
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [status, setStatus] = useState("پرداخت نشده");
-  console.log("status", status);
+
 
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
   const deleteProduct = () => {
     setDeleteLoading(true);
     deleteOrders(showDeleteModal)
@@ -47,7 +48,7 @@ export default function OrderPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
-        console.log(res);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -133,12 +134,19 @@ export default function OrderPage() {
   return (
     <>
       <ConfirmDeleteModal
-        title="حذف محصول"
+        title="حذف سفارش"
         visible={showDeleteModal}
         onConfirm={deleteProduct}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`آیا برای حذف کردن این سفارش مطمئن هستید؟`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از سفارشات اطمینان دارید؟`
+            : `آیا برای حذف کردن این سفارش مطمئن هستید؟`
+        }
       />
 
       <div className={classes.wrapper}>
@@ -182,6 +190,10 @@ export default function OrderPage() {
             params={{
               overall_status: status,
             }}
+            onGroupDelete={(rowSelection) => {
+              setShowDeleteModal(rowSelection.selectedRowKeys)
+            }}
+            unselectAll={unselectAll}
           />
         </PageTemplate>
       </div>

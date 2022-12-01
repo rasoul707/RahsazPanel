@@ -43,6 +43,7 @@ export default function BlogPage() {
   };
 
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
   const deleteBlogPost = () => {
     setDeleteLoading(true);
     deleteBlogPostApi(showDeleteModal)
@@ -50,6 +51,7 @@ export default function BlogPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -134,9 +136,16 @@ export default function BlogPage() {
         title="حذف نوشته"
         visible={!!showDeleteModal}
         onConfirm={deleteBlogPost}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text="آیا برای حذف کردن این نوشته مطمئن هستید؟"
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از نوشته ها اطمینان دارید؟`
+            : `آیا برای حذف کردن این نوشته مطمئن هستید؟`
+        }
       />
       <div className={classes.wrapper}>
         <PageTemplate
@@ -165,6 +174,10 @@ export default function BlogPage() {
             api={getBlogPostsApi}
             params={{ status }}
             reload={reload}
+            onGroupDelete={(rowSelection) => {
+              setShowDeleteModal(rowSelection.selectedRowKeys)
+            }}
+            unselectAll={unselectAll}
           />
         </PageTemplate>
       </div>

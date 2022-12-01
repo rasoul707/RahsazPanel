@@ -26,6 +26,8 @@ export default function BlogPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [parentData, setParentData] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [unselectAll, setUnselectAll] = useState(false);
+
   const deletePage = () => {
     setDeleteLoading(true);
     removePagesApi(showDeleteModal)
@@ -33,6 +35,7 @@ export default function BlogPage() {
         setReload(!reload);
         setDeleteLoading(false);
         setShowDeleteModal(false);
+        setUnselectAll()
       })
       .catch(() => {
         setDeleteLoading(false);
@@ -88,9 +91,16 @@ export default function BlogPage() {
         title="حذف صفحه"
         visible={showDeleteModal}
         onConfirm={deletePage}
-        onCancel={() => setShowDeleteModal(false)}
+        onCancel={() => {
+          setShowDeleteModal(false)
+          setUnselectAll()
+        }}
         loading={deleteLoading}
-        text={`آیا برای حذف کردن این صفحه مطمئن هستید؟`}
+        text={
+          Array.isArray(showDeleteModal)
+            ? `آیا از حذف ${showDeleteModal.length} مورد از صفحات اطمینان دارید؟`
+            : `آیا برای حذف کردن این صفحه مطمئن هستید؟`
+        }
       />
       <div className={classes.wrapper}>
         <PageTemplate
@@ -110,6 +120,10 @@ export default function BlogPage() {
             api={getPagesApi}
             reload={reload}
             setTableDataForParent={setParentData}
+            onGroupDelete={(rowSelection) => {
+              setShowDeleteModal(rowSelection.selectedRowKeys)
+            }}
+            unselectAll={unselectAll}
           />
         </PageTemplate>
       </div>
