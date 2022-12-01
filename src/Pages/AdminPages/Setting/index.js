@@ -51,10 +51,10 @@ export default function BlogPage() {
       status === "tax"
         ? getTaxSettingApi
         : status === "form"
-        ? getFormSettingApi
-        : status === "info"
-        ? getInfoSettingApi
-        : false;
+          ? getFormSettingApi
+          : status === "info"
+            ? getInfoSettingApi
+            : false;
     if (getApi) {
       const data = await getApi();
       setDefaultValues(data);
@@ -79,8 +79,8 @@ export default function BlogPage() {
       status === "tax"
         ? postTaxSettingApi
         : status === "form"
-        ? postFormSettingApi
-        : postInfoSettingApi;
+          ? postFormSettingApi
+          : postInfoSettingApi;
     if (status == "form") {
       body = {
         ...form_data,
@@ -306,13 +306,13 @@ export default function BlogPage() {
                           placeholder="ایمیل را وارد کنید"
                         />
                       </Grid>
-                      <Grid item xs={12} sm={6}>                      
-                      <TextareaInput
-                       label="متن"
-                       name="header_text"
-                       placeholder="ما در تمام مراحل ۲۴ ساعته در کنار شما هستیم"
-                     />
-                   </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextareaInput
+                          label="متن"
+                          name="header_text"
+                          placeholder="ما در تمام مراحل ۲۴ ساعته در کنار شما هستیم"
+                        />
+                      </Grid>
                     </Grid>
                     <hr style={{ margin: "24px 0" }} />
                     <h3 className={classes.subtitle}>
@@ -374,23 +374,23 @@ export default function BlogPage() {
                     <h3 className={classes.subtitle}>لینک نمادها</h3>
                     <Grid container direction="row" spacing={2}>
                       <Grid item xs={12} sm={6}>
-                        <NormalInput
-                          name="enamad_code"
+                        <TextareaInput
                           label="نماد اعتماد الکترونیک"
+                          name="enamad_code"
                           placeholder="کد نماد را وارد کنید"
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <NormalInput
-                          name="union_code"
+                        <TextareaInput
                           label="نماد اتحادیه کسب و کارهای مجازی"
+                          name="union_code"
                           placeholder="کد نماد را وارد کنید"
                         />
                       </Grid>
                       <Grid item xs={12} sm={12}>
-                        <NormalInput
-                          name="organizing_code"
+                        <TextareaInput
                           label="نماد ستاد ساماندهی پایگاه های اینترنتی"
+                          name="organizing_code"
                           placeholder="کد نماد را وارد کنید"
                         />
                       </Grid>
