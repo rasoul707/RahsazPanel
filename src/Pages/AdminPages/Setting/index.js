@@ -3,6 +3,8 @@ import { makeStyles, Grid } from "@material-ui/core";
 import { useForm, FormProvider } from "react-hook-form";
 import { Spin } from "antd";
 import { toast } from "Utils/toast";
+import { useNavigate, useLocation } from "react-router-dom";
+
 // Components
 import AddEditCurrencyModal from "Pages/AdminPages/Setting/AddEditCurrencyModal";
 import CarrencySetting from "Pages/AdminPages/Setting/CarrencySetting";
@@ -39,20 +41,30 @@ const useStyles = makeStyles(theme => ({
 export default function BlogPage() {
   const classes = useStyles();
   const methods = useForm();
-  const [status, setStatus] = useState("tax"); // ["tax", "form", "info", "currency"]
+
+
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(false);
   const [defaultValues, setDefaultValues] = useState(null);
-  console.log("defaultValues", defaultValues);
   const [showAddCurrencyModal, setShowAddCurrencyModal] = useState(false);
+
+
+  // ###########################
+  const navigate = useNavigate()
+  const location = useLocation()
+  const qp = new URLSearchParams(location.search)
+  const $status = qp.get('status') || "tax"
+  // ###########################
+
+
   const initialPage = async () => {
     setLoading(true);
     const getApi =
-      status === "tax"
+      $status === "tax"
         ? getTaxSettingApi
-        : status === "form"
+        : $status === "form"
           ? getFormSettingApi
-          : status === "info"
+          : $status === "info"
             ? getInfoSettingApi
             : false;
     if (getApi) {
@@ -65,23 +77,23 @@ export default function BlogPage() {
   useEffect(() => {
     // get data for initial page
     initialPage();
-  }, [status, reload]);
+  }, [$status, reload]);
   const onSubmit = async data => {
     let form_data = {};
     let body = {};
-    if (status == "form") {
+    if ($status === "form") {
       for (const [key, value] of Object.entries(data)) {
-        if (value == "enable" || value === true) form_data[key] = 1;
+        if (value === "enable" || value === true) form_data[key] = 1;
       }
     }
     setLoading(true);
     const postApi =
-      status === "tax"
+      $status === "tax"
         ? postTaxSettingApi
-        : status === "form"
+        : $status === "form"
           ? postFormSettingApi
           : postInfoSettingApi;
-    if (status == "form") {
+    if ($status === "form") {
       body = {
         ...form_data,
       };
@@ -121,14 +133,16 @@ export default function BlogPage() {
                 { label: "مشخصات ضروری ما", value: "info" },
                 { label: "ارز ها", value: "currency" },
               ]}
-              active={status}
+              active={$status}
               setActive={value => {
-                setStatus(value);
+                if (!value) qp.delete('status')
+                else qp.set('status', value)
+                navigate({ search: qp.toString() })
               }}
             />
           }
           left={
-            status === "currency" ? (
+            $status === "currency" ? (
               <Button
                 disabled={loading}
                 type="submit"
@@ -151,7 +165,7 @@ export default function BlogPage() {
             <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(onSubmit)}>
                 {/* GENERAL FORM  */}
-                {status === "tax" && (
+                {$status === "tax" && (
                   <>
                     <h3 className={classes.subtitle}>مالیات و عوارض</h3>
                     <Grid container direction="row" spacing={2}>
@@ -231,7 +245,7 @@ export default function BlogPage() {
                   </>
                 )}
                 {/* FORM FORM  :) */}
-                {status === "form" && (
+                {$status === "form" && (
                   <>
                     <h3 className={classes.subtitle}>فرم‌های مشتری</h3>
                     <Grid container direction="row" spacing={2}>
@@ -286,7 +300,7 @@ export default function BlogPage() {
                   </>
                 )}
                 {/* INFO FORM  */}
-                {status === "info" && (
+                {$status === "info" && (
                   <>
                     <h3 className={classes.subtitle}>اطلاعات تماس در هدر بالای صفحه</h3>
                     <Grid container direction="row" spacing={2}>
@@ -454,7 +468,7 @@ export default function BlogPage() {
                   </>
                 )}
                 {/* CURRENCY FORM  */}
-                {status === "currency" && (
+                {$status === "currency" && (
                   <CarrencySetting reload={reload} setReload={setReload} />
                 )}
               </form>

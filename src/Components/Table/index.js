@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Table, Spin, Pagination } from "antd";
 import { Grid } from "@material-ui/core";
 import { componentPropsValidator } from "Utils/helperFunction";
+import { useNavigate, useLocation, } from "react-router-dom";
 
 // Components
 import PageHeader from "Components/PageTemplate/PageHeader";
@@ -42,8 +43,7 @@ export default function TableComponent({
   const classes = useStyles();
   // handle header params
   const [totalItemsCount, setTotalItemsCount] = useState(0);
-  const [searchValue, setSearchValue] = useState("");
-  const [sortValue, setSortValue] = useState("");
+  // const [sortValue, setSortValue] = useState("");
 
   // date range
   const [startDate, setStartDate] = useState(null);
@@ -70,14 +70,11 @@ export default function TableComponent({
   // handle api call
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const [offset, setOffset] = useState(0);
-  const [pageSize, setPageSize] = useState(25);
+  // const [offset, setOffset] = useState(0);
+  // const [pageSize, setPageSize] = useState(25);
   const [prevParams, setPrevParams] = useState(null);
 
-  const handlePaginationChange = (page, page_size) => {
-    setOffset(page - 1);
-    setPageSize(page_size)
-  };
+
 
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -95,15 +92,32 @@ export default function TableComponent({
   }, [unselectAll]);
 
 
+  // ###########################
+  const navigate = useNavigate()
+  const location = useLocation()
+  const $qp = new URLSearchParams(location.search)
+  const $search = $qp.get('search')
+  const $sort = $qp.get('sort')
+  const $page = parseInt($qp.get('page')) || 1
+  const $psize = parseInt($qp.get('psize')) || 25
+  // ###########################
+
+  const handlePaginationChange = (page, page_size) => {
+    $qp.set('page', page)
+    if (page_size !== 25) $qp.set('psize', page_size)
+    navigate({ search: $qp.toString() })
+  };
+
+
   const getTableData = async () => {
     setLoading(true);
     setSelectedRowKeys([])
     const apiParams = {
-      offset,
-      search: searchValue,
+      offset: $page - 1,
+      search: $search,
       order_by: "created_at",
-      page_size: pageSize,
-      order_type: customParamsSort ? null : sortValue,
+      page_size: $psize,
+      order_type: customParamsSort ? null : $sort,
       ...params,
       // date range
       ...(showRangeFilter
@@ -114,7 +128,7 @@ export default function TableComponent({
         : {}),
     };
     if (customParamsSort) {
-      apiParams[customParamsSort] = sortValue;
+      apiParams[customParamsSort] = $sort;
     }
     const data = await api(apiParams);
     let dataWithKey;
@@ -145,7 +159,7 @@ export default function TableComponent({
     // get table data
     getTableData();
     setFirstTry(false);
-  }, [offset, pageSize, searchValue, sortValue, startDate, endDate, reload]);
+  }, [$page, $psize, $search, $sort, startDate, endDate, reload]);
 
   // params is separate from other values beacuse
   // when any state has been changed in parent component table reload
@@ -165,9 +179,21 @@ export default function TableComponent({
       <PageHeader
         title={title} // from table props
         totalItemsCount={mode === "custom" ? null : totalItemsCount}
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
-        sort={{ ...sort, setSortValue }}
+        searchValue={$search}
+        setSearchValue={value => {
+          if (!value) $qp.delete('search')
+          else $qp.set('search', value)
+          navigate({ search: $qp.toString() })
+        }}
+        sort={{
+          ...sort,
+          sortValue: $sort,
+          setSortValue: (value) => {
+            if (!value) $qp.delete('sort')
+            else $qp.set('sort', value)
+            navigate({ search: $qp.toString() })
+          }
+        }}
         showSearch={showSearch}
         showRangeFilter={showRangeFilter}
         handleDateRangeChange={handleDateRangeChange}
@@ -175,7 +201,7 @@ export default function TableComponent({
           <Button
             onClick={() => onGroupDelete(rowSelection)}
             children={`حذف ${selectedCount} مورد`}
-            style={{ marginLeft: 5 }}
+            style={{ marginLeft: 5, }}
             size='small'
           />
         </>}
@@ -202,7 +228,7 @@ export default function TableComponent({
             <Pagination
               total={totalItemsCount}
               onChange={handlePaginationChange}
-              pageSize={pageSize}
+              pageSize={$psize}
             />
           </div>
         </Spin>
@@ -213,9 +239,10 @@ export default function TableComponent({
           loading={loading}
           pagination={{
             position: ["none", "bottomCenter"],
-            pageSize: pageSize,
+            pageSize: $psize,
             onChange: handlePaginationChange,
             total: totalItemsCount,
+            current: $page
           }}
           rowSelection={enableSelection && rowSelection}
         />

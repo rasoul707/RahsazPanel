@@ -59,6 +59,7 @@ import {
 } from "Services";
 import { ReactComponent as DeleteIcon } from "Assets/img/icons/delete-red.svg";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 const useStyles = makeStyles(theme => ({
@@ -120,16 +121,28 @@ export default function BlogPage() {
   const classes = useStyles();
   const methods = useForm();
 
-  const [status, setStatus] = useState("footer-settings");
+  // const [status, setStatus] = useState("footer-settings");
   const [reload, setReload] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [defaultValues, setDefaultValues] = useState(null);
 
+
+
+  // ###########################
+  const navigate = useNavigate()
+  const location = useLocation()
+  const qp = new URLSearchParams(location.search)
+  const $status = qp.get('status') || "slider"
+  // ###########################
+
+
   // Slide
   const [showAddSlideModal, setShowAddSlideModal] = useState(false);
   const [showEditSlideModal, setShowEditSlideModal] = useState(false);
   const [showSlideDeleteModal, setShowSlideDeleteModal] = useState(false);
+
+
 
   const editSlideItem = item => {
     setShowEditSlideModal(item);
@@ -260,15 +273,15 @@ export default function BlogPage() {
     setLoading(true);
 
     const getApi =
-      status === "slider"
+      $status === "slider"
         ? getWebsiteSlidersApi
-        : status === "products" ? getWebsiteGroupsApi
-          : status === "footer-settings" ? getFooterSettingApi
+        : $status === "products" ? getWebsiteGroupsApi
+          : $status === "footer-settings" ? getFooterSettingApi
             : getWebsiteAdsApi;
 
-    const data = await getApi(status === "products" && selectedGroup);
+    const data = await getApi($status === "products" && selectedGroup);
     setDefaultValues(data);
-    if (status === "footer-settings") {
+    if ($status === "footer-settings") {
       setFooterMenu(data?.map(v => {
         return {
           ...v,
@@ -291,7 +304,7 @@ export default function BlogPage() {
 
     // get data for initial page
     initialPage();
-  }, [status, reload, selectedGroup]);
+  }, [$status, reload, selectedGroup]);
 
 
 
@@ -391,7 +404,7 @@ export default function BlogPage() {
 
 
   let leftButton = <div />
-  if (status === "slider") {
+  if ($status === "slider") {
     leftButton = (
       <Button
         disabled={loading}
@@ -403,7 +416,7 @@ export default function BlogPage() {
       </Button>
     )
   }
-  else if (status === "ads") {
+  else if ($status === "ads") {
     leftButton = (
       <Button
         disabled={loading}
@@ -414,7 +427,7 @@ export default function BlogPage() {
       </Button>
     )
   }
-  else if (status === "footer-settings") {
+  else if ($status === "footer-settings") {
     leftButton = (
       <div className="d-flex align-center" style={{ gap: "12px" }}>
         <Button
@@ -510,9 +523,11 @@ export default function BlogPage() {
                 { label: "تنظیمات فوتر", value: "footer-settings" },
                 { label: "بنرهای تبلیغاتی", value: "ads" },
               ]}
-              active={status}
+              active={$status}
               setActive={value => {
-                setStatus(value);
+                if (!value) qp.delete('status')
+                else qp.set('status', value)
+                navigate({ search: qp.toString() })
               }}
             />
           }
@@ -520,7 +535,7 @@ export default function BlogPage() {
         >
           <Spin spinning={loading}>
             {/* SLIDER  */}
-            {status === "slider" && (
+            {$status === "slider" && (
               <Grid container direction="row" spacing={2}>
                 {!!defaultValues?.length ? (
                   defaultValues?.map((slide, index) => (
@@ -549,7 +564,7 @@ export default function BlogPage() {
             )}
 
             {/* PRODUCTS  */}
-            {status === "products" && (
+            {$status === "products" && (
               <>
                 <div className="d-flex justify-content-center my-4">
                   <RadioButton
@@ -651,7 +666,7 @@ export default function BlogPage() {
             )}
 
             {/* FooterMenu  */}
-            {status === "footer-settings" && (
+            {$status === "footer-settings" && (
               <>
 
 
@@ -786,7 +801,7 @@ export default function BlogPage() {
             )}
 
             {/* ADS  */}
-            {status === "ads" && (
+            {$status === "ads" && (
               <>
                 <FormProvider {...methods}>
                   <form onSubmit={methods.handleSubmit(submitBannerForm)}>

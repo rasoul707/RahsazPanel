@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Spin } from "antd";
 import { NAString } from "Utils/helperFunction";
@@ -40,10 +40,11 @@ const useStyles = makeStyles(theme => ({
 }));
 export default function CategoryPage() {
   const classes = useStyles();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("main-category"); // ["main-category", "technical-maps"]
   const [reload, setReload] = useState(false);
+  const [isFirstStatusEffect, setIsFirstStatusEffect] = useState(true);
+  const [isFirstChildStatusEffect, setIsFirstChildStatusEffect] = useState(true);
+
   // Modals
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
@@ -51,16 +52,55 @@ export default function CategoryPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   // Initial Page
-  const [selectedChildren, setSelectedChildren] = useState(null);
+  // const [status, setStatus] = useState("main-category"); // ["main-category", "technical-maps"]
+  // const [selectedChildren, setSelectedChildren] = useState(null);
+  // 
   const [mainCategoriesChildren, setMainCategoriesChildren] = useState([]);
-  const [tachnicalMapsChildren, setTachnicalMapsChildren] = useState([]);
-  const [parentColumnName, setParentColumnName] = useState(null);
+  const [technicalMapsChildren, setTechnicalMapsChildren] = useState([]);
+
+  const [mainCategoriesChildrenIDs, setMainCategoriesChildrenIDs] = useState([]);
+  const [technicalMapsChildrenIDs, setTechnicalMapsChildrenIDs] = useState([]);
+
+  // const [parentColumnName, setParentColumnName] = useState(null);
+
+
+
+  const getDefaultChildrenStatusID = (parent) => {
+    if (parent === "main-category") {
+      return mainCategoriesChildrenIDs[0]
+    }
+    if (parent === "technical-maps") {
+      return technicalMapsChildrenIDs[0]
+    }
+  }
+  const getChildrenStatusByID = (parent, ID) => {
+    if (parent === "main-category") {
+      const index = mainCategoriesChildrenIDs.indexOf(ID)
+      return mainCategoriesChildren[index]
+    }
+    if (parent === "technical-maps") {
+      const index = technicalMapsChildrenIDs.indexOf(ID)
+      return technicalMapsChildren[index]
+    }
+  }
+  // ###########################
+  const navigate = useNavigate()
+  const location = useLocation()
+  const qp = new URLSearchParams(location.search)
+  const $status = qp.get('status') || "main-category"
+  const $ch_status = parseInt(qp.get('ch_status')) || getDefaultChildrenStatusID($status)
+  const $selectedChildren = getChildrenStatusByID($status, $ch_status)
+  // ###########################
+
+
+
+
   const updateOrder = async (e, index) => {
     setLoading(true);
     await updateOrderApi(e, index)
       .then(res => {
         setLoading(false);
-        navigate("/admin/category");
+        // navigate("/admin/category");
         toast.success("الویت با موفقیت تغییر یافت");
       })
       .catch(err => {
@@ -75,46 +115,63 @@ export default function CategoryPage() {
     await updateMenuApi()
       .then(res => {
         setLoading(false);
-        navigate("/admin/category");
+        // navigate("/admin/category");
         toast.success("منو با موفقیت بروز رسانی شد");
       })
       .catch(err => {
         console.log(err);
         setLoading(false);
       });
-
   };
+
+
+
 
 
   const sorter = (a, b) => (isNaN(a) && isNaN(b) ? (a || '').localeCompare(b || '') : a - b);
   const initialPage = async () => {
     setLoading(true);
     const data = await initialCategoryPageApi();
-    if (!selectedChildren) {
-      console.log(data)
-      setSelectedChildren(data[0]?.children[0]);
-      setParentColumnName(null);
-    }
+
+
+
     setMainCategoriesChildren(data[0]?.children);
-    setTachnicalMapsChildren(data[1]?.children);
+    setTechnicalMapsChildren(data[1]?.children);
+    setMainCategoriesChildrenIDs(data[0]?.children.map((v) => v.id))
+    setTechnicalMapsChildrenIDs(data[1]?.children.map((v) => v.id))
+
+    // setParentColumnName($selectedChildren?.brother?.name);
+
     setLoading(false);
   };
   useEffect(() => {
     // get data for initial page
     initialPage();
   }, [reload]);
+
+
   // set selected category when status change
   useEffect(() => {
-    if (selectedChildren) {
-      setParentColumnName(null);
-      if (status === "main-category") {
-        setSelectedChildren(mainCategoriesChildren[0]);
-      }
-      if (status === "technical-maps") {
-        setSelectedChildren(tachnicalMapsChildren[0]);
-      }
+    if (!isFirstStatusEffect && qp.get('ch_status')) {
+      // setParentColumnName(null)
+      const bqp = new URLSearchParams();
+      if (qp.get('status')) bqp.set('status', qp.get('status'));
+      navigate({ search: bqp.toString() })
     }
-  }, [status]);
+    setIsFirstStatusEffect(false)
+  }, [$status]);
+
+  useEffect(() => {
+    if (!isFirstChildStatusEffect && qp.get('ch_status')) {
+      const bqp = new URLSearchParams();
+      if (qp.get('status')) bqp.set('status', qp.get('status'));
+      bqp.set('ch_status', qp.get('ch_status'));
+      navigate({ search: bqp.toString() })
+    }
+    setIsFirstChildStatusEffect(false)
+  }, [$ch_status]);
+
+
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [unselectAll, setUnselectAll] = useState(false);
   const deleteCategory = () => {
@@ -130,9 +187,11 @@ export default function CategoryPage() {
         setDeleteLoading(false);
       });
   };
+
+
   const columns = [
     {
-      title: `نام ${selectedChildren?.name}`,
+      title: `نام ${$selectedChildren?.name}`,
       dataIndex: 'name',
       key: 'name',
       render: (_text, record) => (
@@ -165,10 +224,10 @@ export default function CategoryPage() {
         />
       )
     },
-    ...(parentColumnName
+    ...($selectedChildren?.brother?.name
       ? [
         {
-          title: parentColumnName,
+          title: $selectedChildren?.brother?.name,
           render: (_text, record) => (
             <span className="table-text">
               {NAString(record.parent?.name)}
@@ -183,7 +242,7 @@ export default function CategoryPage() {
         <div>
           <Dropdown
             items={[
-              ...(selectedChildren?.id === 9
+              ...($selectedChildren?.id === 9
                 ? [
                   <Link target="_blank" to={`/admin/category/edit-technical-map/${record.id}`}>
                     <EditIcon /> <span>مشاهده کالاهای دسته</span>
@@ -207,14 +266,14 @@ export default function CategoryPage() {
       ),
     },
   ];
-  const CHILDREN =
-    status === "main-category" ? mainCategoriesChildren : tachnicalMapsChildren;
-  const CHILDREN_NAME =
-    status === "main-category" ? "دسته اصلی" : "نقشه‌های فنی";
+
+  const CHILDREN_NAME = $status === "main-category" ? "دسته اصلی" : "نقشه‌های فنی";
+  const CHILDREN = $status === "main-category" ? mainCategoriesChildren : technicalMapsChildren
+
   return (
     <>
       <ConfirmDeleteModal
-        title={`حذف ${selectedChildren?.name}`}
+        title={`حذف ${$selectedChildren?.name}`}
         visible={!!showDeleteModal}
         onConfirm={deleteCategory}
         onCancel={() => {
@@ -224,8 +283,8 @@ export default function CategoryPage() {
         loading={deleteLoading}
         text={
           Array.isArray(showDeleteModal)
-            ? `آیا از حذف ${showDeleteModal.length} مورد از ${selectedChildren?.name} ها اطمینان دارید؟`
-            : `آیا برای حذف کردن این ${selectedChildren?.name} مطمئن هستید؟`
+            ? `آیا از حذف ${showDeleteModal.length} مورد از ${$selectedChildren?.name} ها اطمینان دارید؟`
+            : `آیا برای حذف کردن این ${$selectedChildren?.name} مطمئن هستید؟`
         }
       />
       {showRenameModal && (
@@ -242,8 +301,8 @@ export default function CategoryPage() {
           visible={showAddModal}
           onCancel={() => setShowAddModal(false)}
           setReload={setReload}
-          parentColumnName={parentColumnName}
-          selectedChildren={selectedChildren}
+          parentColumnName={$selectedChildren?.brother?.name}
+          selectedChildren={$selectedChildren}
         />
       )}
       {showEditModal && (
@@ -252,8 +311,8 @@ export default function CategoryPage() {
           visible={showEditModal}
           onCancel={() => setShowEditModal(false)}
           setReload={setReload}
-          parentColumnName={parentColumnName}
-          selectedChildren={selectedChildren}
+          parentColumnName={$selectedChildren?.brother?.name}
+          selectedChildren={$selectedChildren}
         />
       )}
       {showOrderModal && (
@@ -273,9 +332,11 @@ export default function CategoryPage() {
                 { label: "دسته اصلی", value: "main-category" },
                 { label: "نقشه‌های فنی", value: "technical-maps" },
               ]}
-              active={status}
+              active={$status}
               setActive={value => {
-                setStatus(value);
+                if (!value) qp.delete('status')
+                else qp.set('status', value)
+                navigate({ search: qp.toString() })
               }}
             />
           }
@@ -306,28 +367,28 @@ export default function CategoryPage() {
 
 
           <Spin spinning={loading}>
-
             <div className="d-flex justify-content-center mb-4">
               <RadioButton
                 buttons={CHILDREN?.map(item => ({
                   label: item.name,
-                  value: item,
+                  value: item.id,
                   parent: item.brother?.name,
                 }))}
-                active={selectedChildren}
+                active={$ch_status}
                 setActive={(value, item) => {
-                  console.log(value)
-                  setSelectedChildren(value);
-                  setParentColumnName(item?.parent);
+                  if (!value) qp.delete('ch_status')
+                  else qp.set('ch_status', value)
+                  navigate({ search: qp.toString() })
+                  // setParentColumnName(item?.parent);
                 }}
               />
             </div>
-            {selectedChildren && (
+            {$selectedChildren && (
               <Table
-                title={selectedChildren?.name}
+                title={$selectedChildren?.name}
                 columns={columns}
                 api={getCategoryItemsApi}
-                params={{ id: selectedChildren?.id }}
+                params={{ id: $selectedChildren?.id }}
                 reload={reload}
                 onGroupDelete={(rowSelection) => {
                   setShowDeleteModal(rowSelection.selectedRowKeys)

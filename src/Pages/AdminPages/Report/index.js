@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import fileDownload from "js-file-download";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Components
 import PageTemplate from "Components/PageTemplate";
@@ -20,12 +21,18 @@ const useStyles = makeStyles(theme => ({
 export default function BlogPage() {
   const classes = useStyles();
 
-  const [status, setStatus] = useState("orders");
   const [csvData, setCsvData] = useState([]);
 
   const handleDownlaodCsv = () => {
-    fileDownload(csvData, status + ".csv");
+    fileDownload(csvData, $status + ".csv");
   };
+
+  // ###########################
+  const navigate = useNavigate()
+  const location = useLocation()
+  const qp = new URLSearchParams(location.search)
+  const $status = qp.get('status') || "orders"
+  // ###########################
 
   return (
     <>
@@ -39,9 +46,11 @@ export default function BlogPage() {
                 { label: "مشتریان", value: "customers" },
                 { label: "انبار", value: "store-room" },
               ]}
-              active={status}
+              active={$status}
               setActive={value => {
-                setStatus(value);
+                if (!value) qp.delete('status')
+                else qp.set('status', value)
+                navigate({ search: qp.toString() })
               }}
             />
           }
@@ -52,13 +61,13 @@ export default function BlogPage() {
           }
         >
           {/* ORDERS  */}
-          {status === "orders" && <OrdersReport setCsvData={setCsvData} />}
+          {$status === "orders" && <OrdersReport setCsvData={setCsvData} />}
 
           {/* CUSTOMERS  */}
-          {status === "customers" && (<CustomersReport setCsvData={setCsvData} />)}
+          {$status === "customers" && (<CustomersReport setCsvData={setCsvData} />)}
 
           {/* STORE ROOM  */}
-          {status === "store-room" && (<StoreRoomReport setCsvData={setCsvData} />)}
+          {$status === "store-room" && (<StoreRoomReport setCsvData={setCsvData} />)}
         </PageTemplate>
       </div>
     </>

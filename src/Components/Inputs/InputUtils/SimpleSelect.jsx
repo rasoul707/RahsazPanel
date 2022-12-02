@@ -39,8 +39,10 @@ export default function SimpleSelect({
       }
 
       if (autoFindValue && options?.length) {
+        console.log("boooooooooous")
         const temp = options.find(item => item.value === defaultValue);
         if (temp) {
+
           setValue(name, entireObject ? temp : temp?.value);
           setSelectValue(temp);
         }
@@ -48,6 +50,9 @@ export default function SimpleSelect({
         setValue(name, entireObject ? defaultValue : defaultValue?.value);
         setSelectValue(defaultValue);
       }
+    }
+    else {
+      setSelectValue(null);
     }
   }, [defaultValue, options]);
 

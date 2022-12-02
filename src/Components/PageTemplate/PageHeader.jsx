@@ -1,4 +1,4 @@
-import { useState, } from "react";
+import { useEffect, useState, } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -73,7 +73,7 @@ export default function PageHeader({
   // wget http://download.bt.cn/install/public.sh
 
   // handle search value
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchValue);
 
   const handleOnChange = e => {
     setSearch(e?.target?.value);
@@ -84,6 +84,12 @@ export default function PageHeader({
       setSearchValue(search);
     }
   };
+
+  useEffect(() => {
+    setSearch(searchValue || "")
+  }, [searchValue])
+
+
 
   return (
     <div className={classes.tableHeaderWrapper}>
@@ -105,7 +111,8 @@ export default function PageHeader({
             placeholder={sort.placeholder}
             withoutControl={true}
             options={sort.options}
-            shouldCheckValidDefault
+            autoFindValue
+            defaultValue={sort.sortValue}
             onChange={optionValue => sort?.setSortValue(optionValue)}
           />
         )}

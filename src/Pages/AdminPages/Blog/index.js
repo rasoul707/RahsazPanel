@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatDate } from "Utils/helperFunction";
 
@@ -30,9 +30,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function BlogPage() {
   const classes = useStyles();
-  const navigate = useNavigate();
 
-  const [status, setStatus] = useState("published");
+
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -57,6 +56,13 @@ export default function BlogPage() {
         setDeleteLoading(false);
       });
   };
+
+  // ###########################
+  const navigate = useNavigate()
+  const location = useLocation()
+  const qp = new URLSearchParams(location.search)
+  const $status = qp.get('status') || "published"
+  // ###########################
 
   const columns = [
     {
@@ -156,9 +162,11 @@ export default function BlogPage() {
                 { label: "منتشر شده", value: "published" },
                 { label: "پیس نویس‌ها", value: "scheduled" },
               ]}
-              active={status}
+              active={$status}
               setActive={value => {
-                setStatus(value);
+                if (!value) qp.delete('status')
+                else qp.set('status', value)
+                navigate({ search: qp.toString() })
               }}
             />
           }
@@ -172,7 +180,7 @@ export default function BlogPage() {
             title="نوشته"
             columns={columns}
             api={getBlogPostsApi}
-            params={{ status }}
+            params={{ status: $status }}
             reload={reload}
             onGroupDelete={(rowSelection) => {
               setShowDeleteModal(rowSelection.selectedRowKeys)

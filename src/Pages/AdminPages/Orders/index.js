@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { NAString, formatPrice } from "Utils/helperFunction";
 
@@ -32,11 +32,10 @@ const useStyles = makeStyles(theme => ({
 
 export default function OrderPage() {
   const classes = useStyles();
-  const navigate = useNavigate();
+
 
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [status, setStatus] = useState("پرداخت نشده");
 
 
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -131,6 +130,13 @@ export default function OrderPage() {
     },
   ];
 
+  // ###########################
+  const navigate = useNavigate()
+  const location = useLocation()
+  const qp = new URLSearchParams(location.search)
+  const $status = qp.get('status') || "پرداخت نشده"
+  // ###########################
+
   return (
     <>
       <ConfirmDeleteModal
@@ -159,9 +165,11 @@ export default function OrderPage() {
                 { label: "تکمیل شده", value: "تکمیل شده" },
                 { label: "پرداخت نشده", value: "پرداخت نشده" },
               ]}
-              active={status}
+              active={$status}
               setActive={value => {
-                setStatus(value);
+                if (!value) qp.delete('status')
+                else qp.set('status', value)
+                navigate({ search: qp.toString() })
               }}
             />
           }
@@ -188,7 +196,7 @@ export default function OrderPage() {
               ],
             }}
             params={{
-              overall_status: status,
+              overall_status: $status,
             }}
             onGroupDelete={(rowSelection) => {
               setShowDeleteModal(rowSelection.selectedRowKeys)

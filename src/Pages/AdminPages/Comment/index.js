@@ -2,6 +2,7 @@ import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { formatDate } from "Utils/helperFunction";
 import { Tag } from "antd";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Components
 import PageTemplate from "Components/PageTemplate";
@@ -32,7 +33,6 @@ export default function BlogPage() {
   const classes = useStyles();
 
 
-  const [status, setStatus] = useState("comment");
   const [reload, setReload] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAnswerModal, setShowAnswerModal] = useState(false);
@@ -58,6 +58,13 @@ export default function BlogPage() {
         setDeleteLoading(false);
       });
   };
+
+  // ###########################
+  const navigate = useNavigate()
+  const location = useLocation()
+  const qp = new URLSearchParams(location.search)
+  const $status = qp.get('status') || "comment"
+  // ###########################
 
   const columns = [
     {
@@ -94,7 +101,7 @@ export default function BlogPage() {
       ),
     },
     {
-      title: status === "comment" ? "دیدگاه کاربر" : "پرسش کاربر",
+      title: $status === "comment" ? "دیدگاه کاربر" : "پرسش کاربر",
       render: (_text, record) => (
         <span className="table-text">{record.content}</span>
       ),
@@ -148,7 +155,7 @@ export default function BlogPage() {
   return (
     <>
       <ConfirmDeleteModal
-        title={status === "comment" ? "حذف دیدگاه" : "حذف پرسش"}
+        title={$status === "comment" ? "حذف دیدگاه" : "حذف پرسش"}
         visible={!!showDeleteModal}
         onConfirm={deleteComment}
         onCancel={() => {
@@ -178,7 +185,7 @@ export default function BlogPage() {
         <PageTemplate
           right={
             <PageTitle>
-              {status === "comment" ? "دیدگاه‌ها" : "پرسش و پاسخ‌ها"}
+              {$status === "comment" ? "دیدگاه‌ها" : "پرسش و پاسخ‌ها"}
             </PageTitle>
           }
           center={
@@ -187,19 +194,21 @@ export default function BlogPage() {
                 { label: "دیدگاه‌ها", value: "comment" },
                 { label: "پرسش و پاسخ‌ها", value: "question_and_answer" },
               ]}
-              active={status}
+              active={$status}
               setActive={value => {
-                setStatus(value);
+                if (!value) qp.delete('status')
+                else qp.set('status', value)
+                navigate({ search: qp.toString() })
               }}
             />
           }
           left={<div />}
         >
           <Table
-            title={status === "comment" ? "دیدگاه‌" : "پرسش و پاسخ"}
+            title={$status === "comment" ? "دیدگاه‌" : "پرسش و پاسخ"}
             columns={columns}
             api={getCommentsApi}
-            params={{ type: status }}
+            params={{ type: $status }}
             reload={reload}
             onGroupDelete={(rowSelection) => {
               setShowDeleteModal(rowSelection.selectedRowKeys)

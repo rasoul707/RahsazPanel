@@ -31,7 +31,7 @@ export default function PrimaryButton({
   className,
   children,
   background = "#F6891F",
-  padding = "12px 16px",
+  padding = "9px 16px",
   width = "auto",
   color = "#FFFFFF",
   iconColor = "#FFFFFF",
