@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef, } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Table, Spin, Pagination } from "antd";
 import { Grid } from "@material-ui/core";
@@ -11,7 +11,9 @@ import { Button, } from "Components/Button";
 
 
 
-
+import update from 'immutability-helper';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 
 const useStyles = makeStyles(theme => ({
@@ -31,6 +33,7 @@ export default function TableComponent({
   reload,
   sort,
   card,
+  ordering,
   showSearch = true,
   showRangeFilter = false,
   mode,
@@ -43,7 +46,7 @@ export default function TableComponent({
   const classes = useStyles();
   // handle header params
   const [totalItemsCount, setTotalItemsCount] = useState(0);
-  // const [sortValue, setSortValue] = useState("");
+
 
   // date range
   const [startDate, setStartDate] = useState(null);
@@ -54,7 +57,7 @@ export default function TableComponent({
   };
 
   // config for columns props
-  const [localColumns, setLoacalColumn] = useState(columns);
+  const [localColumns, setLocalColumn] = useState(columns);
   useEffect(() => {
     const config = {
       align: "right",
@@ -64,14 +67,12 @@ export default function TableComponent({
       ...item,
       dataIndex: index,
     }));
-    setLoacalColumn(columnsWithConfig);
+    setLocalColumn(columnsWithConfig);
   }, [columns]);
 
   // handle api call
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
-  // const [offset, setOffset] = useState(0);
-  // const [pageSize, setPageSize] = useState(25);
   const [prevParams, setPrevParams] = useState(null);
 
 
@@ -174,6 +175,45 @@ export default function TableComponent({
     setPrevParams(params);
   }, [params]);
 
+
+
+
+
+  // drag sorting
+  const components = {
+    body: {
+      row: DraggableBodyRow,
+    },
+  };
+  const moveRow = useCallback(
+    (dragIndex, hoverIndex) => {
+      const dragRow = tableData[dragIndex];
+      setTableData(
+        update(tableData, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, dragRow],
+          ],
+        }),
+      );
+    },
+    [tableData],
+  );
+
+
+  const updateOrder = async () => {
+    const data = tableData.map(({ id }, index) => ({ id, order: index + 1 }))
+    ordering.save(data)
+  }
+
+  useEffect(() => {
+    if (ordering?.action) updateOrder()
+  }, [ordering?.action])
+
+
+
+
+
   return (
     <div className={classes.wrapper}>
       <PageHeader
@@ -233,20 +273,105 @@ export default function TableComponent({
           </div>
         </Spin>
       ) : (
-        <Table
-          dataSource={tableData}
-          columns={localColumns}
-          loading={loading}
-          pagination={{
-            position: ["none", "bottomCenter"],
-            pageSize: $psize,
-            onChange: handlePaginationChange,
-            total: totalItemsCount,
-            current: $page
-          }}
-          rowSelection={enableSelection && rowSelection}
-        />
+        ordering
+          ?
+          <DndProvider backend={HTML5Backend}>
+            <Table
+              dataSource={tableData}
+              columns={localColumns}
+              loading={loading}
+              pagination={{
+                position: ["none", "bottomCenter"],
+                pageSize: $psize,
+                onChange: handlePaginationChange,
+                total: totalItemsCount,
+                current: $page
+              }}
+              components={components}
+              onRow={(_, index) => {
+                const attr = {
+                  index,
+                  moveRow,
+                };
+                return attr;
+              }}
+              rowSelection={enableSelection && rowSelection}
+            />
+          </DndProvider>
+          :
+          <Table
+            dataSource={tableData}
+            columns={localColumns}
+            loading={loading}
+            pagination={{
+              position: ["none", "bottomCenter"],
+              pageSize: $psize,
+              onChange: handlePaginationChange,
+              total: totalItemsCount,
+              current: $page
+            }}
+            rowSelection={enableSelection && rowSelection}
+          />
       )}
     </div>
   );
 }
+
+
+
+
+
+
+
+// ########################
+
+const type = 'DraggableBodyRow';
+const DraggableBodyRow = ({ index, moveRow, className, style, ...restProps }) => {
+  const ref = useRef(null);
+  const [{ isOver, dropClassName }, drop] = useDrop({
+    accept: type,
+    collect: (monitor) => {
+      const { index: dragIndex } = monitor.getItem() || {};
+      if (dragIndex === index) {
+        return {};
+      }
+      return {
+        isOver: monitor.isOver(),
+        dropClassName: dragIndex < index ? ' drop-over-downward' : ' drop-over-upward',
+      };
+    },
+    drop: (item) => {
+      moveRow(item.index, index);
+    },
+  });
+  const [, drag] = useDrag({
+    type,
+    item: {
+      index,
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+  drop(drag(ref));
+  return (
+    <tr
+      ref={ref}
+      className={`${className}${isOver ? dropClassName : ''}`}
+      style={{
+        cursor: 'move',
+        ...style,
+      }}
+      {...restProps}
+    />
+  );
+};
+
+
+
+
+
+
+
+
+

@@ -28,15 +28,15 @@ export const addProductToMapApi = ({ id, body }) =>
   api.post(`/categories/item/${id}/store-product`, body).then(res => res.data);
 
 
-export const updateOrderApi = ( order, category_id ) =>
-  api.get(`/categories/update-order-item/${category_id}-${order}`).then(res => res.data);
+export const updateOrderApi = (data) =>
+  api.post(`/categories/update-orders`, data).then(res => res.data);
 
-  
-  export const updateMenuApi = () =>
+
+export const updateMenuApi = () =>
   api.post(`/categories/updateMenu`).then(res => res.data);
 
 
-export const removeProductFromMapApi =(product_id,id) =>
+export const removeProductFromMapApi = (product_id, id) =>
   api
     .post(
       `/categories/item/${id}/destroy-product`,

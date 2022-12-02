@@ -94,20 +94,20 @@ export default function CategoryPage() {
 
 
 
-
-  const updateOrder = async (e, index) => {
-    setLoading(true);
-    await updateOrderApi(e, index)
+  const [action2saveOrdering, setAction2saveOrdering] = useState(false)
+  const updateOrder = async (data) => {
+    setLoading(true)
+    await updateOrderApi({ items: data })
       .then(res => {
-        setLoading(false);
-        // navigate("/admin/category");
-        toast.success("الویت با موفقیت تغییر یافت");
+        setLoading(false)
+        setAction2saveOrdering(false)
+        toast.success("با موفقیت ذخیره شد")
       })
       .catch(err => {
-        console.log(err);
-        setLoading(false);
+        console.log(err)
+        setLoading(false)
+        setAction2saveOrdering(false)
       });
-
   };
 
   const handelMenu = async () => {
@@ -212,16 +212,7 @@ export default function CategoryPage() {
       key: 'order',
       sorter: (a, b) => sorter(a.order, b.order),
       render: (_text, record) => (
-        <NormalInput
-          name="order"
-          width="30%"
-          type="number"
-          withoutControl
-          rules={{ required: true }}
-          label="الویت"
-          onChange={e => updateOrder(e, record?.id)}
-          defaultValue={NAString(record?.order)}
-        />
+        NAString(record?.order)
       )
     },
     ...($selectedChildren?.brother?.name
@@ -345,11 +336,14 @@ export default function CategoryPage() {
               <Button onClick={() => setShowAddModal(true)}>
                 <AddIcon /> افزودن
               </Button>
-              <Button onClick={() => handelMenu()}>
-                <AddIcon /> بروز رسانی منو
+              <Button onClick={() => { setAction2saveOrdering(true) }}>
+                ذخیره اولویت ها
               </Button>
               <Dropdown
                 items={[
+                  <button onClick={() => handelMenu()}>
+                    <ChangeIcon /> <span>بروزرسانی منو</span>
+                  </button>,
                   <button onClick={() => setShowRenameModal(CHILDREN)}>
                     <ChangeIcon /> <span>تغییر نام دسته‌ها</span>
                   </button>,
@@ -394,11 +388,15 @@ export default function CategoryPage() {
                   setShowDeleteModal(rowSelection.selectedRowKeys)
                 }}
                 unselectAll={unselectAll}
+                ordering={{
+                  action: action2saveOrdering,
+                  save: updateOrder
+                }}
               />
             )}
           </Spin>
         </PageTemplate>
-      </div>
+      </div >
     </>
   );
 }
