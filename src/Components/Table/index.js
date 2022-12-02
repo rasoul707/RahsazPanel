@@ -212,8 +212,14 @@ export default function TableComponent({
 
 
 
-
-
+  const _pagination = {
+    total: totalItemsCount,
+    position: ["none", "bottomCenter"],
+    onChange: handlePaginationChange,
+    pageSize: $psize,
+    current: $page,
+    pageSizeOptions: ["25", "50", "100", "250", "500"],
+  }
   return (
     <div className={classes.wrapper}>
       <PageHeader
@@ -266,9 +272,7 @@ export default function TableComponent({
           </Grid>
           <div className={classes.cardPaginationWrapper}>
             <Pagination
-              total={totalItemsCount}
-              onChange={handlePaginationChange}
-              pageSize={$psize}
+              {..._pagination}
             />
           </div>
         </Spin>
@@ -280,13 +284,8 @@ export default function TableComponent({
               dataSource={tableData}
               columns={localColumns}
               loading={loading}
-              pagination={{
-                position: ["none", "bottomCenter"],
-                pageSize: $psize,
-                onChange: handlePaginationChange,
-                total: totalItemsCount,
-                current: $page
-              }}
+              pagination={_pagination}
+              rowSelection={enableSelection && rowSelection}
               components={components}
               onRow={(_, index) => {
                 const attr = {
@@ -295,7 +294,6 @@ export default function TableComponent({
                 };
                 return attr;
               }}
-              rowSelection={enableSelection && rowSelection}
             />
           </DndProvider>
           :
@@ -303,14 +301,7 @@ export default function TableComponent({
             dataSource={tableData}
             columns={localColumns}
             loading={loading}
-            pagination={{
-              position: ["none", "bottomCenter"],
-              pageSize: $psize,
-              onChange: handlePaginationChange,
-              total: totalItemsCount,
-              current: $page,
-              pageSizeOptions: ["25", "50", "100", "250", "500"],
-            }}
+            pagination={_pagination}
             rowSelection={enableSelection && rowSelection}
           />
       )}
