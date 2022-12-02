@@ -308,7 +308,8 @@ export default function TableComponent({
               pageSize: $psize,
               onChange: handlePaginationChange,
               total: totalItemsCount,
-              current: $page
+              current: $page,
+              pageSizeOptions: ["25", "50", "100", "250", "500"],
             }}
             rowSelection={enableSelection && rowSelection}
           />

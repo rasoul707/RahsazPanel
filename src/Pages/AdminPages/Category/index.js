@@ -21,12 +21,7 @@ import { ReactComponent as ChangeIcon } from "Assets/img/icons/change.svg";
 import { ReactComponent as EditIcon } from "Assets/img/icons/edit.svg";
 import { ReactComponent as DeleteIcon } from "Assets/img/icons/delete-red.svg";
 import { ReactComponent as MoveIcon } from "Assets/img/icons/move.svg";
-import {
-  NormalInput,
-  TextareaInput,
-  SelectInput,
-  DateInput,
-} from "Components/Inputs";
+
 // Services
 import {
   initialCategoryPageApi,
@@ -101,7 +96,7 @@ export default function CategoryPage() {
       .then(res => {
         setLoading(false)
         setAction2saveOrdering(false)
-        toast.success("با موفقیت ذخیره شد")
+        toast.success("با موفقیت بروزرسانی شد")
       })
       .catch(err => {
         console.log(err)
@@ -206,15 +201,15 @@ export default function CategoryPage() {
         <span className="table-text">{NAString(record.description)}</span>
       ),
     },
-    {
-      title: "الویت",
-      dataIndex: 'order',
-      key: 'order',
-      sorter: (a, b) => sorter(a.order, b.order),
-      render: (_text, record) => (
-        NAString(record?.order)
-      )
-    },
+    // {
+    //   title: "الویت",
+    //   dataIndex: 'order',
+    //   key: 'order',
+    //   sorter: (a, b) => sorter(a.order, b.order),
+    //   render: (_text, record) => (
+    //     NAString(record?.order)
+    //   )
+    // },
     ...($selectedChildren?.brother?.name
       ? [
         {
