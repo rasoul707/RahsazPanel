@@ -17,6 +17,9 @@ import { ConfirmDeleteModal } from "Components/Modal";
 import { ReactComponent as AddIcon } from "Assets/img/icons/add.svg";
 import { ReactComponent as BackArrow } from "Assets/img/icons/back-arrow.svg";
 
+
+import { useNavigate } from "react-router-dom";
+
 // Services
 import {
   addProductToMapApi,
@@ -111,6 +114,8 @@ export default function TechnicalMapForm() {
       });
   };
 
+  const navigate = useNavigate()
+
   return (
     <>
       <ConfirmDeleteModal
@@ -125,11 +130,11 @@ export default function TechnicalMapForm() {
         <Spin spinning={loading}>
           <PageTemplate
             right={
-              <Link to="/admin/category">
-                <button className="transparent-button">
-                  <BackArrow /> <span>بازگشت به لیست</span>
-                </button>
-              </Link>
+              // <Link to="/admin/category">
+              <button className="transparent-button" onClick={() => navigate(-1)}>
+                <BackArrow /> <span>بازگشت به لیست</span>
+              </button>
+              // </Link>
             }
             center={<PageTitle>نقشه فنی</PageTitle>}
             left={<div />}
