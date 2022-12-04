@@ -106,6 +106,7 @@ export default function AddEditCategoryModal({
                             name="name"
                             label="نام دسته بندی"
                             placeholder="نام را وارد کنید"
+                            autoComplete="off"
                         />
 
                         {/* <NormalInput
