@@ -257,7 +257,7 @@ export default function LoginPage() {
     setLoading(true);
     await (isEdit ? editProductApi : addProductApi)(data)
       .then(() => {
-        navigate("/admin/product");
+        navigate(-1);
         setLoading(false);
       })
       .catch(() => {
@@ -284,7 +284,7 @@ export default function LoginPage() {
                   <PageTemplate
                     right={
                       <button
-                        onClick={() => navigate("/admin/product")}
+                        onClick={() => navigate(-1)}
                         className="transparent-button"
                       >
                         <BackArrow /> <span>بازگشت به لیست</span>
