@@ -230,7 +230,7 @@ export default function CategoryPage() {
             items={[
               ...($selectedChildren?.id === 9
                 ? [
-                  <Link target="_blank" to={`/admin/category/edit-technical-map/${record.id}`}>
+                  <Link to={`/admin/category/edit-technical-map/${record.id}`}>
                     <EditIcon /> <span>مشاهده کالاهای دسته</span>
                   </Link>,
                 ]

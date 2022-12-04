@@ -103,7 +103,8 @@ export default function AddEditCategoryModal({
                             height: "750px"
                         }}>
                         <NormalInput name="name" label="نام دسته بندی" placeholder="نام را وارد کنید" />
-                        <NormalInput
+
+                        {/* <NormalInput
                             name="order"
                             label="الویت"
                             placeholder="الویت را وارد کنید"
@@ -144,6 +145,7 @@ export default function AddEditCategoryModal({
                                     label: 'AccessAlarms'
                                 }
                             ]} name="icon" />
+                             */}
                         <div className="form-floating">
                             <input
                                 type="password"
