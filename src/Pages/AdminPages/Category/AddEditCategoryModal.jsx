@@ -100,9 +100,13 @@ export default function AddEditCategoryModal({
                 <FormProvider {...methods}>
                     <form
                         style={{
-                            height: "750px"
+                            // height: "750px"
                         }}>
-                        <NormalInput name="name" label="نام دسته بندی" placeholder="نام را وارد کنید" />
+                        <NormalInput
+                            name="name"
+                            label="نام دسته بندی"
+                            placeholder="نام را وارد کنید"
+                        />
 
                         {/* <NormalInput
                             name="order"
@@ -146,14 +150,21 @@ export default function AddEditCategoryModal({
                                 }
                             ]} name="icon" />
                              */}
-                        <div className="form-floating">
+                        <NormalInput
+                            name="password"
+                            type="password"
+                            label="پسورد"
+                            placeholder="پسورد را وارد کنید"
+                            autoComplete="new-password"
+                        />
+                        {/* <div className="form-floating">
                             <input
                                 type="password"
                                 className="form-control"
                                 id="floatingPassword"
                                 placeholder="Password" />
                             <label htmlFor="floatingPassword">Password</label>
-                        </div>
+                        </div> */}
                         {
                             parentColumnName && (
                                 <AsyncSelectInput
