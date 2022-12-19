@@ -41,3 +41,13 @@
 .ant-modal-header {
   border-radius: 8px 8px 0 0;
 }
+
+
+
+.ant-table tr.drop-over-downward td {
+  border-bottom: 2px dashed #1890ff;
+}
+
+.ant-table tr.drop-over-upward td {
+  border-top: 2px dashed #1890ff;
+}

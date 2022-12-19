@@ -187,17 +187,51 @@ export default function TableComponent({
   };
   const moveRow = useCallback(
     (dragIndex, hoverIndex) => {
-      const dragRow = tableData[dragIndex];
-      setTableData(
-        update(tableData, {
-          $splice: [
-            [dragIndex, 1],
-            [hoverIndex, 0, dragRow],
-          ],
-        }),
-      );
+      if (selectedRowKeys.length) {
+        let _data = [...tableData]
+
+        const oldIndex = selectedRowKeys.map((id, _index) => {
+          return tableData.map((x) => { return x.id; }).indexOf(id);
+        }).sort((a, b) => a - b);
+
+        if (hoverIndex < dragIndex) {
+          oldIndex.reverse().forEach((index) => {
+            _data.splice(index, 1);
+          })
+          oldIndex.reverse().forEach((index) => {
+            const ho = hoverIndex
+            _data.splice(ho, 0, tableData[index])
+            hoverIndex++
+          })
+        }
+        else {
+          hoverIndex++
+          oldIndex.forEach((index) => {
+            const ho = hoverIndex
+            _data.splice(ho, 0, tableData[index])
+            hoverIndex++
+          })
+          oldIndex.reverse().forEach((index) => {
+            _data.splice(index, 1);
+          })
+        }
+
+        setTableData([..._data]);
+        setSelectedRowKeys([])
+      }
+      else {
+        const dragRow = tableData[dragIndex];
+        setTableData(
+          update(tableData, {
+            $splice: [
+              [dragIndex, 1],
+              [hoverIndex, 0, dragRow],
+            ],
+          }),
+        );
+      }
     },
-    [tableData],
+    [tableData, selectedRowKeys],
   );
 
 
